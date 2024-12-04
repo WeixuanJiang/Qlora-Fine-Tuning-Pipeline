@@ -1,0 +1,30 @@
+2024-11-27 11:53:54,900 INFO    MainThread:15952 [wandb_setup.py:_flush():79] Current SDK version is 0.18.7
+2024-11-27 11:53:54,900 INFO    MainThread:15952 [wandb_setup.py:_flush():79] Configure stats pid to 15952
+2024-11-27 11:53:54,900 INFO    MainThread:15952 [wandb_setup.py:_flush():79] Loading settings from C:\Users\long8\.config\wandb\settings
+2024-11-27 11:53:54,900 INFO    MainThread:15952 [wandb_setup.py:_flush():79] Loading settings from D:\llm\fine-tune\qlora_pipeline\scripts\wandb\settings
+2024-11-27 11:53:54,900 WARNING MainThread:15952 [wandb_setup.py:_flush():79] Unknown environment variable: WANDB_LOG_MODEL
+2024-11-27 11:53:54,900 WARNING MainThread:15952 [wandb_setup.py:_flush():79] Unknown environment variable: WANDB_WATCH
+2024-11-27 11:53:54,911 INFO    MainThread:15952 [wandb_setup.py:_flush():79] Loading settings from environment variables: {'base_url': 'https://api.wandb.ai', 'root_dir': 'wandb', 'entity': 'your_username', 'project': 'qwen-qlora'}
+2024-11-27 11:53:54,911 INFO    MainThread:15952 [wandb_setup.py:_flush():79] Applying setup settings: {'mode': 'online', '_disable_service': None}
+2024-11-27 11:53:54,911 INFO    MainThread:15952 [wandb_setup.py:_flush():79] Inferring run settings from compute environment: {'program_relpath': '..\\train.py', 'program_abspath': 'D:\\llm\\fine-tune\\qlora_pipeline\\train.py', 'program': 'D:\\llm\\fine-tune\\qlora_pipeline\\scripts\\..\\train.py'}
+2024-11-27 11:53:54,911 INFO    MainThread:15952 [wandb_setup.py:_flush():79] Applying login settings: {}
+2024-11-27 11:53:54,911 INFO    MainThread:15952 [wandb_init.py:_log_setup():533] Logging user logs to wandb\wandb\run-20241127_115354-ofg0rvv8\logs\debug.log
+2024-11-27 11:53:54,911 INFO    MainThread:15952 [wandb_init.py:_log_setup():534] Logging internal logs to wandb\wandb\run-20241127_115354-ofg0rvv8\logs\debug-internal.log
+2024-11-27 11:53:54,911 INFO    MainThread:15952 [wandb_init.py:init():619] calling init triggers
+2024-11-27 11:53:54,911 INFO    MainThread:15952 [wandb_init.py:init():626] wandb.init called with sweep_config: {}
+config: {'model_name': 'Qwen/Qwen2.5-0.5B-Instruct', 'dataset_path': 'd:/llm/fine-tune/qlora_pipeline\\data\\physics_qa', 'max_samples': 1000, 'max_length': 2048, 'num_train_epochs': 3, 'batch_size': 4, 'learning_rate': 0.0002, 'weight_decay': 0.001, 'warmup_ratio': 0.03, 'lr_scheduler': 'cosine', 'lora_r': 8, 'lora_alpha': 32, 'lora_dropout': 0.1, 'bits': 4, 'double_quant': 'true', 'quant_type': 'nf4'}
+2024-11-27 11:53:54,911 INFO    MainThread:15952 [wandb_init.py:init():669] starting backend
+2024-11-27 11:53:54,911 INFO    MainThread:15952 [wandb_init.py:init():673] sending inform_init request
+2024-11-27 11:53:54,923 INFO    MainThread:15952 [wandb_init.py:init():686] backend started and connected
+2024-11-27 11:53:54,933 INFO    MainThread:15952 [wandb_init.py:init():781] updated telemetry
+2024-11-27 11:53:54,934 INFO    MainThread:15952 [wandb_init.py:init():814] communicating run to backend with 90.0 second timeout
+2024-11-27 11:53:55,411 ERROR   MainThread:15952 [wandb_init.py:init():841] encountered error: failed to upsert bucket: returned error 404 Not Found: {"errors":[{"message":"entity your_username not found during upsertBucket","path":["upsertBucket"]}],"data":{"upsertBucket":null}}
+2024-11-27 11:53:55,411 ERROR   MainThread:15952 [wandb_init.py:init():1266] error in wandb.init()
+Traceback (most recent call last):
+  File "D:\anaconda3\Lib\site-packages\wandb\sdk\wandb_init.py", line 1256, in init
+    return wi.init()
+           ^^^^^^^^^
+  File "D:\anaconda3\Lib\site-packages\wandb\sdk\wandb_init.py", line 847, in init
+    raise error
+wandb.errors.errors.CommError: failed to upsert bucket: returned error 404 Not Found: {"errors":[{"message":"entity your_username not found during upsertBucket","path":["upsertBucket"]}],"data":{"upsertBucket":null}}
+2024-11-27 11:53:55,433 WARNING MsgRouterThr:15952 [router.py:message_loop():75] message_loop has been closed

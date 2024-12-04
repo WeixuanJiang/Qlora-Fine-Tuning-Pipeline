@@ -1,0 +1,161 @@
+INFO: ==================================================
+2024-11-26 15:14:54,070 - INFO - ==================================================
+INFO: Configuration:
+2024-11-26 15:14:54,072 - INFO - Configuration:
+INFO:
+Model:
+2024-11-26 15:14:54,073 - INFO -
+Model:
+INFO:   name: Qwen/Qwen2.5-0.5B-Instruct
+2024-11-26 15:14:54,074 - INFO -   name: Qwen/Qwen2.5-0.5B-Instruct
+INFO:   bits: 4
+2024-11-26 15:14:54,075 - INFO -   bits: 4
+INFO:   double_quant: True
+2024-11-26 15:14:54,075 - INFO -   double_quant: True
+INFO:   quant_type: nf4
+2024-11-26 15:14:54,077 - INFO -   quant_type: nf4
+INFO:
+Dataset:
+2024-11-26 15:14:54,078 - INFO -
+Dataset:
+INFO:   path: D:\llm\fine-tune\qlora_pipeline\scripts\..\data\physics_qa.json
+2024-11-26 15:14:54,080 - INFO -   path: D:\llm\fine-tune\qlora_pipeline\scripts\..\data\physics_qa.json
+INFO:   name: PM
+2024-11-26 15:14:54,081 - INFO -   name: PM
+INFO:   max_samples: 1000
+2024-11-26 15:14:54,082 - INFO -   max_samples: 1000
+INFO:   max_length: 2048
+2024-11-26 15:14:54,083 - INFO -   max_length: 2048
+INFO:
+Training:
+2024-11-26 15:14:54,084 - INFO -
+Training:
+INFO:   num_epochs: 300
+2024-11-26 15:14:54,084 - INFO -   num_epochs: 300
+INFO:   batch_size: 4
+2024-11-26 15:14:54,085 - INFO -   batch_size: 4
+INFO:   learning_rate: 0.0002
+2024-11-26 15:14:54,086 - INFO -   learning_rate: 0.0002
+INFO:   weight_decay: 0.001
+2024-11-26 15:14:54,087 - INFO -   weight_decay: 0.001
+INFO:   warmup_ratio: 0.03
+2024-11-26 15:14:54,088 - INFO -   warmup_ratio: 0.03
+INFO:   lr_scheduler: cosine
+2024-11-26 15:14:54,089 - INFO -   lr_scheduler: cosine
+INFO:
+LoRA:
+2024-11-26 15:14:54,090 - INFO -
+LoRA:
+INFO:   r: 64
+2024-11-26 15:14:54,091 - INFO -   r: 64
+INFO:   alpha: 128
+2024-11-26 15:14:54,092 - INFO -   alpha: 128
+INFO:   dropout: 0.05
+2024-11-26 15:14:54,093 - INFO -   dropout: 0.05
+INFO:
+Wandb:
+2024-11-26 15:14:54,093 - INFO -
+Wandb:
+INFO:   project: qlora-finetune
+2024-11-26 15:14:54,094 - INFO -   project: qlora-finetune
+INFO:   run_name: Qwen2.5-0.5B-Instruct-20241126_151451
+2024-11-26 15:14:54,095 - INFO -   run_name: Qwen2.5-0.5B-Instruct-20241126_151451
+INFO:   watch: gradients
+2024-11-26 15:14:54,095 - INFO -   watch: gradients
+INFO:   log_model: checkpoint
+2024-11-26 15:14:54,096 - INFO -   log_model: checkpoint
+INFO: Loading tokenizer...
+2024-11-26 15:14:54,097 - INFO - Loading tokenizer...
+INFO: Loading model...
+2024-11-26 15:14:54,738 - INFO - Loading model...
+Unused kwargs: ['bnb_4bit_double_quant']. These kwargs are not used in <class 'transformers.utils.quantization_config.BitsAndBytesConfig'>.
+2024-11-26 15:14:55,400 - INFO - We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+INFO:
+==================================================
+2024-11-26 15:14:56,966 - INFO -
+==================================================
+INFO: Model Information:
+2024-11-26 15:14:56,970 - INFO - Model Information:
+INFO:   Total parameters: 315119488
+2024-11-26 15:14:56,971 - INFO -   Total parameters: 315119488
+INFO:   Trainable parameters: 136178560
+2024-11-26 15:14:56,973 - INFO -   Trainable parameters: 136178560
+INFO:   Percentage of trainable parameters: 43.21489631260127
+2024-11-26 15:14:56,976 - INFO -   Percentage of trainable parameters: 43.21489631260127
+INFO: Preparing model for k-bit training...
+2024-11-26 15:14:56,980 - INFO - Preparing model for k-bit training...
+INFO: Loading dataset...
+2024-11-26 15:14:57,016 - INFO - Loading dataset...
+2024-11-26 15:14:57,030 - INFO - Loaded 20 examples from D:\llm\fine-tune\qlora_pipeline\scripts\..\data\physics_qa.json
+INFO: Dataset loaded with 20 examples
+2024-11-26 15:14:57,033 - INFO - Dataset loaded with 20 examples
+INFO:
+==================================================
+2024-11-26 15:14:57,034 - INFO -
+==================================================
+INFO: Dataset Information:
+2024-11-26 15:14:57,035 - INFO - Dataset Information:
+INFO: Number of examples: 20
+2024-11-26 15:14:57,036 - INFO - Number of examples: 20
+INFO: Features: {'input': Value(dtype='string', id=None), 'output': Value(dtype='string', id=None)}
+2024-11-26 15:14:57,037 - INFO - Features: {'input': Value(dtype='string', id=None), 'output': Value(dtype='string', id=None)}
+INFO: Column names: ['input', 'output']
+2024-11-26 15:14:57,038 - INFO - Column names: ['input', 'output']
+INFO: First example:
+2024-11-26 15:14:57,040 - INFO - First example:
+INFO:   input: Question: What is superposition in quantum mechanics?...
+2024-11-26 15:14:57,042 - INFO -   input: Question: What is superposition in quantum mechanics?...
+INFO:   output: Answer: Superposition is a fundamental principle of quantum mechanics that allows a quantum system t...
+2024-11-26 15:14:57,042 - INFO -   output: Answer: Superposition is a fundamental principle of quantum mechanics that allows a quantum system t...
+INFO: Processing dataset...
+2024-11-26 15:14:57,043 - INFO - Processing dataset...
+Processing dataset: 100%|████████████████████████████████| 20/20 [00:00<00:00, 2050.65 examples/s]
+INFO: Configuring LoRA...
+2024-11-26 15:14:57,135 - INFO - Configuring LoRA...
+INFO: Applying LoRA...
+2024-11-26 15:14:57,137 - INFO - Applying LoRA...
+INFO: Configuring training arguments...
+2024-11-26 15:14:57,296 - INFO - Configuring training arguments...
+INFO: Initializing trainer...
+2024-11-26 15:14:57,338 - INFO - Initializing trainer...
+D:\llm\fine-tune\qlora_pipeline\scripts\..\train.py:517: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+INFO: Starting training...
+2024-11-26 15:14:57,350 - INFO - Starting training...
+ 33%|███████████████████▋                                       | 100/300 [02:27<04:27,  1.34s/it][34m[1mwandb[0m: Adding directory to artifact (D:\llm\fine-tune\qlora_pipeline\qwen_output\run_2024-26-11_0314\checkpoint-100)... Done. 1.2s
+{'loss': 4.2953, 'grad_norm': 8.517522811889648, 'learning_rate': 0.00019999417253661235, 'epoch': 8.0}
+{'loss': 0.9788, 'grad_norm': 7.339486598968506, 'learning_rate': 0.00019929569837240564, 'epoch': 16.0}
+{'loss': 0.2239, 'grad_norm': 1.530931830406189, 'learning_rate': 0.00019744105246469263, 'epoch': 24.0}
+{'loss': 0.1282, 'grad_norm': 0.9659339785575867, 'learning_rate': 0.00019445182979923654, 'epoch': 32.0}
+{'loss': 0.1097, 'grad_norm': 0.814707338809967, 'learning_rate': 0.00019036283606085053, 'epoch': 40.0}
+{'loss': 0.1022, 'grad_norm': 0.5785364508628845, 'learning_rate': 0.00018522168236559695, 'epoch': 48.0}
+{'loss': 0.1018, 'grad_norm': 0.5143096446990967, 'learning_rate': 0.00017908823089007457, 'epoch': 56.0}
+{'loss': 0.0971, 'grad_norm': 0.5417470335960388, 'learning_rate': 0.000172033897852734, 'epoch': 64.0}
+{'loss': 0.0971, 'grad_norm': 0.4217776656150818, 'learning_rate': 0.000164140821963114, 'epoch': 72.0}
+{'loss': 0.0953, 'grad_norm': 0.353253036737442, 'learning_rate': 0.000155500908021347, 'epoch': 80.0}
+ 67%|███████████████████████████████████████▎                   | 200/300 [05:06<02:47,  1.68s/it][34m[1mwandb[0m: Adding directory to artifact (D:\llm\fine-tune\qlora_pipeline\qwen_output\run_2024-26-11_0314\checkpoint-200)... Done. 0.4s
+{'loss': 0.097, 'grad_norm': 0.3027380704879761, 'learning_rate': 0.0001462147568039977, 'epoch': 88.0}
+{'loss': 0.0959, 'grad_norm': 0.3773764669895172, 'learning_rate': 0.00013639049369634876, 'epoch': 96.0}
+{'loss': 0.0922, 'grad_norm': 0.3093971908092499, 'learning_rate': 0.00012614250971021657, 'epoch': 104.0}
+{'loss': 0.0938, 'grad_norm': 0.327869713306427, 'learning_rate': 0.00011559012954653865, 'epoch': 112.0}
+{'loss': 0.0923, 'grad_norm': 0.4133245348930359, 'learning_rate': 0.00010485622221144484, 'epoch': 120.0}
+{'loss': 0.0938, 'grad_norm': 0.40468984842300415, 'learning_rate': 9.406577036341548e-05, 'epoch': 128.0}
+{'loss': 0.09, 'grad_norm': 0.28633660078048706, 'learning_rate': 8.334441504965455e-05, 'epoch': 136.0}
+{'loss': 0.092, 'grad_norm': 0.3982122242450714, 'learning_rate': 7.281699277636572e-05, 'epoch': 144.0}
+{'loss': 0.0906, 'grad_norm': 0.31216728687286377, 'learning_rate': 6.260608194688206e-05, 'epoch': 152.0}
+{'loss': 0.0898, 'grad_norm': 0.2715607285499573, 'learning_rate': 5.283057559252341e-05, 'epoch': 160.0}
+100%|███████████████████████████████████████████████████████████| 300/300 [07:43<00:00,  1.42s/it][34m[1mwandb[0m: Adding directory to artifact (D:\llm\fine-tune\qlora_pipeline\qwen_output\run_2024-26-11_0314\checkpoint-300)... Done. 1.0s
+{'loss': 0.0899, 'grad_norm': 0.3611973822116852, 'learning_rate': 4.360429701490934e-05, 'epoch': 168.0}
+{'loss': 0.0893, 'grad_norm': 0.2784740626811981, 'learning_rate': 3.503467445880789e-05, 'epoch': 176.0}
+{'loss': 0.0894, 'grad_norm': 0.35607439279556274, 'learning_rate': 2.722149024726307e-05, 'epoch': 184.0}
+{'loss': 0.0894, 'grad_norm': 0.3005279004573822, 'learning_rate': 2.025571894372794e-05, 'epoch': 192.0}
+{'loss': 0.0887, 'grad_norm': 0.41468819975852966, 'learning_rate': 1.4218468069322578e-05, 'epoch': 200.0}
+{'loss': 0.0884, 'grad_norm': 0.31200167536735535, 'learning_rate': 9.180033709213454e-06, 'epoch': 208.0}
+{'loss': 0.0887, 'grad_norm': 0.34301871061325073, 'learning_rate': 5.199082004372957e-06, 'epoch': 216.0}
+{'loss': 0.0886, 'grad_norm': 0.3306187093257904, 'learning_rate': 2.3219660592038285e-06, 'epoch': 224.0}
+{'loss': 0.0886, 'grad_norm': 0.2890183627605438, 'learning_rate': 5.821862187675775e-07, 'epoch': 232.0}
+{'loss': 0.0882, 'grad_norm': 0.3046706020832062, 'learning_rate': 0.0, 'epoch': 240.0}
+100%|███████████████████████████████████████████████████████████| 300/300 [07:56<00:00,  1.59s/it]
+{'train_runtime': 470.0421, 'train_samples_per_second': 12.765, 'train_steps_per_second': 0.638, 'train_loss': 0.26819892048835753, 'epoch': 240.0}
+INFO: Saving model...
+2024-11-26 15:22:54,487 - INFO - Saving model...

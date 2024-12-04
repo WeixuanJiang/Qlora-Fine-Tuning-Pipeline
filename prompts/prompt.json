@@ -1,0 +1,54 @@
+{
+    "default": {
+        "system": "You are a helpful AI assistant that follows instructions carefully.",
+        "user": "<|im_start|>user\n{input}<|im_end|>",
+        "assistant": "<|im_start|>assistant\n{output}<|im_end|>"
+    },
+    "qwen": {
+        "system": "You are a helpful AI assistant that follows instructions carefully.",
+        "user": "<|im_start|>user\n{input}<|im_end|>",
+        "assistant": "<|im_start|>assistant\n{output}<|im_end|>"
+    },
+    "llama": {
+        "system": "You are a helpful AI assistant that follows instructions carefully.",
+        "user": "[INST] {input} [/INST]",
+        "assistant": "{output}"
+    },
+    "mistral": {
+        "system": "You are a helpful AI assistant that follows instructions carefully.",
+        "user": "<s>[INST] {input} [/INST]",
+        "assistant": "{output} </s>"
+    },
+    "phi": {
+        "system": "You are a helpful AI assistant that follows instructions carefully.",
+        "user": "Instruct: {input}\nOutput:",
+        "assistant": "{output}"
+    },
+    "custom": {
+        "system": "You are a helpful AI assistant that follows instructions carefully.",
+        "user": "{input}",
+        "assistant": "{output}"
+    },
+    "dataset_generator": {
+        "system": "You are a helpful AI assistant that generates high-quality training examples. Each example should be diverse, realistic, and suitable for language model training. Follow the format requirements exactly.",
+        "instruction": "Generate {num_examples} diverse and realistic examples about {topic}. Each example should include:\n{format_requirements}\n\nEnsure examples are:\n1. Diverse in content and complexity\n2. Realistic and practical\n3. Free from harmful or inappropriate content\n4. Following the exact format specified",
+        "format_examples": {
+            "qa": {
+                "input": "Question: {question}",
+                "output": "Answer: {answer}"
+            },
+            "instruction": {
+                "input": "Instruction: {instruction}",
+                "output": "Response: {response}"
+            },
+            "chat": {
+                "input": "Human: {message}",
+                "output": "Assistant: {response}"
+            },
+            "summary": {
+                "input": "Text: {text}",
+                "output": "Summary: {summary}"
+            }
+        }
+    }
+}

@@ -1,0 +1,1 @@
+{    "evaluation_timestamp": "2024-26-11_0532",    "model": "gpt-4o",    "dataset": "physics_qa.json",    "temperature": "0.0",    "predictions_file": "D:/llm/fine-tune/qlora_pipeline\predictions\predictions.json"} 

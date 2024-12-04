@@ -1,0 +1,115 @@
+INFO: ==================================================
+2024-11-26 14:52:40,876 - INFO - ==================================================
+INFO: Configuration:
+2024-11-26 14:52:40,879 - INFO - Configuration:
+INFO:
+Model:
+2024-11-26 14:52:40,880 - INFO -
+Model:
+INFO:   name: Qwen/Qwen2.5-0.5B-Instruct
+2024-11-26 14:52:40,881 - INFO -   name: Qwen/Qwen2.5-0.5B-Instruct
+INFO:   bits: 4
+2024-11-26 14:52:40,882 - INFO -   bits: 4
+INFO:   double_quant: True
+2024-11-26 14:52:40,882 - INFO -   double_quant: True
+INFO:   quant_type: nf4
+2024-11-26 14:52:40,883 - INFO -   quant_type: nf4
+INFO:
+Dataset:
+2024-11-26 14:52:40,885 - INFO -
+Dataset:
+INFO:   path: D:\llm\fine-tune\qlora_pipeline\scripts\.\data\physics__test_qa.json
+2024-11-26 14:52:40,887 - INFO -   path: D:\llm\fine-tune\qlora_pipeline\scripts\.\data\physics__test_qa.json
+INFO:   name: None
+2024-11-26 14:52:40,889 - INFO -   name: None
+INFO:   max_samples: 1000
+2024-11-26 14:52:40,889 - INFO -   max_samples: 1000
+INFO:   max_length: 2048
+2024-11-26 14:52:40,890 - INFO -   max_length: 2048
+INFO:
+Training:
+2024-11-26 14:52:40,891 - INFO -
+Training:
+INFO:   num_epochs: 300
+2024-11-26 14:52:40,892 - INFO -   num_epochs: 300
+INFO:   batch_size: 4
+2024-11-26 14:52:40,894 - INFO -   batch_size: 4
+INFO:   learning_rate: 0.0002
+2024-11-26 14:52:40,895 - INFO -   learning_rate: 0.0002
+INFO:   weight_decay: 0.001
+2024-11-26 14:52:40,896 - INFO -   weight_decay: 0.001
+INFO:   warmup_ratio: 0.03
+2024-11-26 14:52:40,897 - INFO -   warmup_ratio: 0.03
+INFO:   lr_scheduler: cosine
+2024-11-26 14:52:40,897 - INFO -   lr_scheduler: cosine
+INFO:
+LoRA:
+2024-11-26 14:52:40,899 - INFO -
+LoRA:
+INFO:   r: 64
+2024-11-26 14:52:40,904 - INFO -   r: 64
+INFO:   alpha: 128
+2024-11-26 14:52:40,906 - INFO -   alpha: 128
+INFO:   dropout: 0.05
+2024-11-26 14:52:40,907 - INFO -   dropout: 0.05
+INFO:
+Wandb:
+2024-11-26 14:52:40,907 - INFO -
+Wandb:
+INFO:   project: qlora-finetune
+2024-11-26 14:52:40,909 - INFO -   project: qlora-finetune
+INFO:   run_name: Qwen2.5-0.5B-Instruct-20241126_145238
+2024-11-26 14:52:40,910 - INFO -   run_name: Qwen2.5-0.5B-Instruct-20241126_145238
+INFO:   watch: gradients
+2024-11-26 14:52:40,911 - INFO -   watch: gradients
+INFO:   log_model: checkpoint
+2024-11-26 14:52:40,912 - INFO -   log_model: checkpoint
+INFO: Loading tokenizer...
+2024-11-26 14:52:40,913 - INFO - Loading tokenizer...
+INFO: Loading model...
+2024-11-26 14:52:42,341 - INFO - Loading model...
+Unused kwargs: ['bnb_4bit_double_quant']. These kwargs are not used in <class 'transformers.utils.quantization_config.BitsAndBytesConfig'>.
+2024-11-26 14:52:43,514 - INFO - We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+INFO:
+==================================================
+2024-11-26 14:52:46,017 - INFO -
+==================================================
+INFO: Model Information:
+2024-11-26 14:52:46,019 - INFO - Model Information:
+INFO:   Total parameters: 315119488
+2024-11-26 14:52:46,020 - INFO -   Total parameters: 315119488
+INFO:   Trainable parameters: 136178560
+2024-11-26 14:52:46,021 - INFO -   Trainable parameters: 136178560
+INFO:   Percentage of trainable parameters: 43.21489631260127
+2024-11-26 14:52:46,022 - INFO -   Percentage of trainable parameters: 43.21489631260127
+INFO: Preparing model for k-bit training...
+2024-11-26 14:52:46,026 - INFO - Preparing model for k-bit training...
+INFO: Loading dataset...
+2024-11-26 14:52:46,069 - INFO - Loading dataset...
+2024-11-26 14:52:46,072 - ERROR - Error loading dataset from D:\llm\fine-tune\qlora_pipeline\scripts\.\data\physics__test_qa.json: [Errno 2] No such file or directory: 'D:\\llm\\fine-tune\\qlora_pipeline\\scripts\\.\\data\\physics__test_qa.json'
+ERROR: Error: Training failed
+2024-11-26 14:52:46,073 - ERROR - Error: Training failed
+ERROR: Exception details:
+2024-11-26 14:52:46,074 - ERROR - Exception details:
+ERROR: Traceback (most recent call last):
+  File "D:\llm\fine-tune\qlora_pipeline\scripts\..\train.py", line 444, in train
+    dataset = load_local_dataset(
+              ^^^^^^^^^^^^^^^^^^^
+  File "D:\llm\fine-tune\qlora_pipeline\scripts\..\train.py", line 154, in load_local_dataset
+    dataset = load_json_dataset(
+              ^^^^^^^^^^^^^^^^^^
+  File "D:\llm\fine-tune\qlora_pipeline\prepare_dataset.py", line 30, in load_json_dataset
+    with open(dataset_path, 'r', encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\llm\\fine-tune\\qlora_pipeline\\scripts\\.\\data\\physics__test_qa.json'
+2024-11-26 14:52:46,075 - ERROR - Traceback (most recent call last):
+  File "D:\llm\fine-tune\qlora_pipeline\scripts\..\train.py", line 444, in train
+    dataset = load_local_dataset(
+              ^^^^^^^^^^^^^^^^^^^
+  File "D:\llm\fine-tune\qlora_pipeline\scripts\..\train.py", line 154, in load_local_dataset
+    dataset = load_json_dataset(
+              ^^^^^^^^^^^^^^^^^^
+  File "D:\llm\fine-tune\qlora_pipeline\prepare_dataset.py", line 30, in load_json_dataset
+    with open(dataset_path, 'r', encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\llm\\fine-tune\\qlora_pipeline\\scripts\\.\\data\\physics__test_qa.json'

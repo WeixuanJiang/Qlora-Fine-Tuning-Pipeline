@@ -1,0 +1,78 @@
+_wandb:
+    value:
+        cli_version: 0.18.7
+        code_path: code/../train.py
+        m: []
+        python_version: 3.12.3
+        t:
+            "1":
+                - 1
+                - 5
+                - 11
+                - 41
+                - 49
+                - 51
+                - 53
+                - 55
+                - 71
+                - 98
+                - 105
+            "2":
+                - 1
+                - 5
+                - 11
+                - 41
+                - 49
+                - 51
+                - 53
+                - 55
+                - 71
+                - 98
+                - 105
+            "3":
+                - 1
+                - 2
+                - 13
+                - 16
+                - 23
+                - 55
+            "4": 3.12.3
+            "5": 0.18.7
+            "6": 4.46.2
+            "8":
+                - 3
+                - 8
+            "12": 0.18.7
+            "13": windows-amd64
+batch_size:
+    value: 4
+bits:
+    value: 4
+dataset_path:
+    value: d:/llm/fine-tune/qlora_pipeline\data\physics_qa
+double_quant:
+    value: "true"
+learning_rate:
+    value: 0.0002
+lora_alpha:
+    value: 32
+lora_dropout:
+    value: 0.1
+lora_r:
+    value: 8
+lr_scheduler:
+    value: cosine
+max_length:
+    value: 2048
+max_samples:
+    value: 1000
+model_name:
+    value: Qwen/Qwen2.5-0.5B-Instruct
+num_train_epochs:
+    value: 3
+quant_type:
+    value: nf4
+warmup_ratio:
+    value: 0.03
+weight_decay:
+    value: 0.001

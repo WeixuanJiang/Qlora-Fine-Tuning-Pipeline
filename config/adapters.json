@@ -1,0 +1,17 @@
+{
+    "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "adapters": [
+        {
+            "name": "physics_qa",
+            "path": "model_output/run_2024-26-11_0314/",
+            "description": "First Physics Q&A fine-tuning",
+            "training_date": "2024-11-26"
+        },
+        {
+            "name": "physics_qa",
+            "path": "model_output/run_2024-26-11_0444/",
+            "description": "Second Physics Q&A fine-tuning",
+            "training_date": "2024-11-26"
+        }
+    ]
+}

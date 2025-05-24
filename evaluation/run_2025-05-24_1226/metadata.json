@@ -1,0 +1,9 @@
+{
+    "evaluation_timestamp": "2025-05-24_1226",
+    "model": "",
+    "dataset": "", 
+    "temperature": "",
+    "predictions_file": "/app/scripts/../predictions/predictions.json",
+    "reference_file": "/app/scripts/..//", 
+    "output_file": "/app/scripts/../evaluation/run_2025-05-24_1226/results/evaluation_results.json"
+}

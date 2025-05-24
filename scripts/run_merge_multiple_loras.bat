@@ -1,15 +1,20 @@
 @echo off
 setlocal EnableDelayedExpansion
 
+set "ROOT_DIR=%~dp0.."
+
 REM Load environment variables
-if exist "%~dp0..\.env" (
-    for /f "tokens=*" %%a in ('type "%~dp0..\.env" ^| findstr /v "^#" ^| findstr /v "^$"') do (
-        set "%%a"
+set "ENV_FILE=%ROOT_DIR%\.env"
+if exist "%ENV_FILE%" (
+    for /f "usebackq tokens=1,* delims==" %%a in ("%ENV_FILE%") do (
+        if not "%%a"=="" if not "%%a:~0,1%"=="#" (
+            set "%%a=%%b"
+        )
     )
 )
 
 REM Set Python path if needed
-set PYTHONPATH=%PYTHONPATH%;%~dp0..
+set "PYTHONPATH=%PYTHONPATH%;%ROOT_DIR%"
 
 REM Get current date and time for unique folder name
 for /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%c-%%a-%%b)
@@ -36,7 +41,7 @@ set mytime=!hour!!minute!
 set TIMESTAMP=%mydate%_%mytime%
 
 REM Configuration
-set "ROOT_DIR=%~dp0.."
+REM ROOT_DIR already defined above
 set "CONFIG_FILE=%ROOT_DIR%\config\adapters.json"
 set "OUTPUT_DIR=%ROOT_DIR%\%MERGED_MODEL_DIR%\merged_%TIMESTAMP%"
 
@@ -118,3 +123,4 @@ del "%READ_CONFIG_SCRIPT%"
 
 echo Model merging completed successfully!
 pause
+endlocal

@@ -56,15 +56,47 @@ CONFIG_DATA=($(python "$READ_CONFIG_SCRIPT" "$CONFIG_FILE"))
 BASE_MODEL=${CONFIG_DATA[0]}
 ADAPTER_COUNT=${CONFIG_DATA[1]}
 
-ADAPTER_PATHS_ARRAY=()
+# ADAPTER_PATHS_ARRAY and ADAPTER_PATHS will be constructed by the new loop below
+
+echo "Verifying adapter paths..."
+VALID_ADAPTER_PATHS_ARRAY=() # Will store quoted, normalized paths for the final ADAPTER_PATHS string
+MISSING_PATHS=0
+TEMP_ADAPTER_PATHS_FOR_PYTHON=() # Will store unquoted, normalized paths for the python script argument construction
+
 for (( i=2; i<${#CONFIG_DATA[@]}; i++ )); do
-    CURRENT_PATH="$ROOT_DIR/${CONFIG_DATA[i]}"
-    # Replace backslashes with forward slashes for cross-platform compatibility (though less critical in .sh)
-    CURRENT_PATH=$(echo "$CURRENT_PATH" | sed 's/\\/\//g')
-    ADAPTER_PATHS_ARRAY+=("'$CURRENT_PATH'")
+    RAW_ADAPTER_PATH_FROM_CONFIG="${CONFIG_DATA[i]}"
+    # Construct the absolute path. ROOT_DIR is defined as $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/..
+    RESOLVED_ADAPTER_PATH="$ROOT_DIR/$RAW_ADAPTER_PATH_FROM_CONFIG"
+
+    echo "Adapter source path from config: \"$RAW_ADAPTER_PATH_FROM_CONFIG\""
+    echo "Attempting to resolve to absolute path: \"$RESOLVED_ADAPTER_PATH\""
+
+    # Normalize the path: remove trailing slashes, resolve . and ..
+    # Using Python for robust normalization to handle various cases like trailing slashes consistently
+    NORMALIZED_ADAPTER_PATH=$(python -c "import os; print(os.path.normpath('$RESOLVED_ADAPTER_PATH'))")
+    
+    if [ ! -d "$NORMALIZED_ADAPTER_PATH" ]; then
+        echo "ERROR: Adapter directory not found or is not a directory: \"$NORMALIZED_ADAPTER_PATH\" (derived from \"$RAW_ADAPTER_PATH_FROM_CONFIG\")"
+        MISSING_PATHS=$((MISSING_PATHS + 1))
+    else
+        echo "Found adapter directory: \"$NORMALIZED_ADAPTER_PATH\""
+        TEMP_ADAPTER_PATHS_FOR_PYTHON+=("$NORMALIZED_ADAPTER_PATH")
+    fi
 done
 
-ADAPTER_PATHS=$(IFS=, ; echo "${ADAPTER_PATHS_ARRAY[*]}")
+if [ "$MISSING_PATHS" -gt 0 ]; then
+    echo "Error: $MISSING_PATHS adapter directory/directories not found. Please check config/adapters.json and ensure directories exist at the correct locations relative to the project root."
+    exit 1
+fi
+
+# Reconstruct ADAPTER_PATHS string for the python script, ensuring paths are quoted
+QUOTED_VALIDATED_PATHS=()
+for p in "${TEMP_ADAPTER_PATHS_FOR_PYTHON[@]}"; do
+    QUOTED_VALIDATED_PATHS+=("'$p'") # Add single quotes around each path
+done
+ADAPTER_PATHS=$(IFS=, ; echo "${QUOTED_VALIDATED_PATHS[*]}")
+
+echo "Final validated and quoted adapter paths to be used by Python script: [$ADAPTER_PATHS]"
 
 echo "Starting multiple LoRA merging with:"
 echo "Base Model: $BASE_MODEL"

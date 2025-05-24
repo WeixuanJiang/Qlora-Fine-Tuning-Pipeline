@@ -1,29 +1,38 @@
 #!/bin/bash
 set -e
 
+SCRIPT_ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
+
 # Load environment variables
-ENV_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../.env"
+ENV_FILE="$SCRIPT_ROOT_DIR/.env"
 if [ -f "$ENV_FILE" ]; then
-    export $(grep -v '^#' "$ENV_FILE" | xargs)
+    export $(grep -v '^#' "$ENV_FILE" | xargs) # DATA_DIR, DATASET_NAME, MODEL_OUTPUT_DIR, etc. loaded here
 fi
 
 # Set Python path if needed
-export PYTHONPATH="$PYTHONPATH:$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
+export PYTHONPATH="$PYTHONPATH:$SCRIPT_ROOT_DIR"
 
 # Get current date and time for unique folder name
 TIMESTAMP=$(date +"%Y-%m-%d_%H%M")
 
-# Set paths using environment variables
-DATASET_PATH="$ROOT_DIR/$DATA_DIR/$DATASET_NAME"
-OUTPUT_DIR="$ROOT_DIR/$MODEL_OUTPUT_DIR/run_$TIMESTAMP"
+# Set paths using SCRIPT_ROOT_DIR and environment variables from .env
+# DATA_DIR, DATASET_NAME, MODEL_OUTPUT_DIR are from .env
+ABS_DATA_DIR_PATH="$SCRIPT_ROOT_DIR/$DATA_DIR" 
+DATASET_PATH="$ABS_DATA_DIR_PATH/$DATASET_NAME"
+
+ABS_MODEL_OUTPUT_DIR="$SCRIPT_ROOT_DIR/$MODEL_OUTPUT_DIR"
+OUTPUT_DIR="$ABS_MODEL_OUTPUT_DIR/run_$TIMESTAMP"
+
+# Create the output directory if it doesn't exist
+mkdir -p "$OUTPUT_DIR"
 
 echo "Starting training with:"
-echo "Base Model: $BASE_MODEL_NAME"
-echo "Dataset: $DATASET_PATH"
-echo "Output Directory: $OUTPUT_DIR"
+echo "Base Model: $BASE_MODEL_NAME" # From .env
+echo "Dataset: $DATASET_PATH"       # Now an absolute path
+echo "Output Directory: $OUTPUT_DIR" # Now an absolute path
 
 # Run training script
-python "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../train.py" \
+python "$SCRIPT_ROOT_DIR/train.py" \
     --model_name "$BASE_MODEL_NAME" \
     --dataset_path "$DATASET_PATH" \
     --output_dir "$OUTPUT_DIR" \

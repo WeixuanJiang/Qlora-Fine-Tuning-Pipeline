@@ -1,5 +1,5 @@
 {
-    "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "base_model": null,
     "adapters": [
         {
             "name": "physics_qa",

@@ -1,14 +1,21 @@
 #!/bin/bash
 set -e
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
+
 # Set CUDA device if needed
 export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
 
 # Set Python path if needed
-export PYTHONPATH="$PYTHONPATH:$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
+export PYTHONPATH="$PYTHONPATH:$ROOT_DIR"
 
-# Model configuration
-MODEL_PATH="${MODEL_PATH:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../merged_model/merged_2024-26-11_0450}"
+# Default paths constructed from ROOT_DIR
+DEFAULT_MODEL_PATH="$ROOT_DIR/merged_model/merged_2024-26-11_0450"
+DEFAULT_INPUT_FILE="$ROOT_DIR/data/physics_qa.json"
+DEFAULT_OUTPUT_FILE="$ROOT_DIR/predictions/predictions.json"
+
+# Model configuration - respect environment variables if set, otherwise use defaults
+MODEL_PATH="${MODEL_PATH:-$DEFAULT_MODEL_PATH}"
 DEVICE="${DEVICE:-auto}"
 MAX_LENGTH="${MAX_LENGTH:-100}"
 TEMPERATURE="${TEMPERATURE:-0.7}"
@@ -19,16 +26,16 @@ NUM_BEAMS="${NUM_BEAMS:-1}"
 # Query (optional - will start interactive mode if empty)
 QUERY="$*"
 
-# Batch inference configuration (optional)
-INPUT_FILE="${INPUT_FILE:-../data/physics_qa.json}"
-OUTPUT_FILE="${OUTPUT_FILE:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../predictions/predictions.json}"
+# Batch inference configuration (optional) - respect environment variables if set
+INPUT_FILE="${INPUT_FILE:-$DEFAULT_INPUT_FILE}"
+OUTPUT_FILE="${OUTPUT_FILE:-$DEFAULT_OUTPUT_FILE}"
 INPUT_FIELD="${INPUT_FIELD:-input}"
 MAX_SAMPLES="${MAX_SAMPLES:-20}"
 
 # Run inference
 if [ -n "$QUERY" ]; then
     # Single query mode
-    python "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../run_inference.py" \
+    python "$ROOT_DIR/run_inference.py" \
         --model_path="$MODEL_PATH" \
         --query="$QUERY" \
         --device="$DEVICE" \
@@ -37,9 +44,9 @@ if [ -n "$QUERY" ]; then
         --top_p="$TOP_P" \
         --top_k="$TOP_K" \
         --num_beams="$NUM_BEAMS"
-elif [ -n "$INPUT_FILE" ]; then
+elif [ -n "$INPUT_FILE" ]; then # Check if INPUT_FILE is non-empty after potential default assignment
     # Batch mode
-    python "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../run_inference.py" \
+    python "$ROOT_DIR/run_inference.py" \
         --model_path="$MODEL_PATH" \
         --input_file="$INPUT_FILE" \
         --output_file="$OUTPUT_FILE" \
@@ -53,7 +60,7 @@ elif [ -n "$INPUT_FILE" ]; then
         --num_beams="$NUM_BEAMS"
 else
     # Interactive mode
-    python "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../run_inference.py" \
+    python "$ROOT_DIR/run_inference.py" \
         --model_path="$MODEL_PATH" \
         --device="$DEVICE" \
         --max_length="$MAX_LENGTH" \

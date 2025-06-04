@@ -96,7 +96,7 @@ A comprehensive machine learning pipeline for fine-tuning and evaluating Qwen la
 ## Features
 
 - QLoRA fine-tuning for Qwen/Qwen2.5-0.5B-Instruct model
-- GPT-4 based evaluation system
+- GPT-4o based evaluation system
 - Comprehensive metrics tracking
 - Batch processing support
 - Detailed logging and analysis
@@ -151,7 +151,7 @@ EVALUATION_DIR=evaluation
 
 ## Evaluation System
 
-The evaluation system uses GPT-4 to assess model outputs across multiple dimensions:
+The evaluation system uses GPT-4o to assess model outputs across multiple dimensions:
 
 - Relevance Score (0-10)
 - Completeness Score (0-10)

@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 load_dotenv()
 
 # Get environment variables
-EVAL_MODEL = os.getenv('EVAL_MODEL', 'gpt-4')
+EVAL_MODEL = os.getenv('EVAL_MODEL', 'gpt-4o')
 EVAL_TEMPERATURE = float(os.getenv('EVAL_TEMPERATURE', '0.0'))
 EVAL_MAX_TOKENS = int(os.getenv('EVAL_MAX_TOKENS', '1000'))
 ROOT_DIR = os.getenv('ROOT_DIR', '.')
@@ -65,7 +65,7 @@ class EvaluationMetrics(BaseModel):
 
 class ModelEvaluator:
     def __init__(self, model_name: str = EVAL_MODEL, temperature: float = EVAL_TEMPERATURE):
-        """Initialize the evaluator with GPT-4"""
+        """Initialize the evaluator with GPT-4o"""
         self.evaluator = ChatOpenAI(
             model=model_name,
             temperature=temperature,
@@ -227,7 +227,7 @@ Provide a detailed evaluation following the specified metrics."""
 def main():
     """Main function to run evaluation"""
     import argparse
-    parser = argparse.ArgumentParser(description='Evaluate model predictions using GPT-4')
+    parser = argparse.ArgumentParser(description='Evaluate model predictions using GPT-4o')
     parser.add_argument('--predictions', type=str, required=True,
                       help='Path to predictions JSON file')
     parser.add_argument('--reference', type=str, required=True,

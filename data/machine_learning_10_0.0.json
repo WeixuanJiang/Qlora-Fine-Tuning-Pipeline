@@ -1,0 +1,42 @@
+[
+  {
+    "input": "[instruction] Example 1 about machine learning",
+    "output": "This is a placeholder response for machine learning example 1."
+  },
+  {
+    "input": "[instruction] Example 2 about machine learning",
+    "output": "This is a placeholder response for machine learning example 2."
+  },
+  {
+    "input": "[instruction] Example 3 about machine learning",
+    "output": "This is a placeholder response for machine learning example 3."
+  },
+  {
+    "input": "[instruction] Example 4 about machine learning",
+    "output": "This is a placeholder response for machine learning example 4."
+  },
+  {
+    "input": "[instruction] Example 5 about machine learning",
+    "output": "This is a placeholder response for machine learning example 5."
+  },
+  {
+    "input": "[instruction] Example 6 about machine learning",
+    "output": "This is a placeholder response for machine learning example 6."
+  },
+  {
+    "input": "[instruction] Example 7 about machine learning",
+    "output": "This is a placeholder response for machine learning example 7."
+  },
+  {
+    "input": "[instruction] Example 8 about machine learning",
+    "output": "This is a placeholder response for machine learning example 8."
+  },
+  {
+    "input": "[instruction] Example 9 about machine learning",
+    "output": "This is a placeholder response for machine learning example 9."
+  },
+  {
+    "input": "[instruction] Example 10 about machine learning",
+    "output": "This is a placeholder response for machine learning example 10."
+  }
+]

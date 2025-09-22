@@ -3,8 +3,8 @@ import sys
 import json
 import logging
 import traceback
-from dataclasses import dataclass, field
-from typing import Optional, Dict, Any, List, Union
+from pathlib import Path
+from typing import Optional, Dict, List, Union, Tuple
 from datetime import datetime
 
 import torch
@@ -20,7 +20,6 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 import pandas as pd
-import wandb
 
 from prepare_dataset import prepare_dataset, format_prompt, load_json_dataset
 
@@ -146,6 +145,7 @@ def load_local_dataset(
     target_column: str = "output",
     max_samples: Optional[int] = None,
     prompt_template: Optional[Union[str, Dict]] = None,
+    logger: Optional["TrainingLogger"] = None,
 ) -> Dataset:
     """
     Load and prepare a local dataset
@@ -166,9 +166,9 @@ def load_local_dataset(
             target_column=target_column,
             prompt_template=prompt_template
         )
-    
-    logger = TrainingLogger()
-    logger.logger.info(f"Dataset loaded with {len(dataset)} examples")
+
+    local_logger = logger or TrainingLogger()
+    local_logger.logger.info(f"Dataset loaded with {len(dataset)} examples")
     return dataset
 
 def load_prompt_templates() -> Dict:
@@ -263,6 +263,102 @@ class DatasetProcessor:
         
         return processed_dataset
 
+
+def resolve_model_path(model_name: str, model_cache_dir: Optional[str] = None) -> Tuple[str, bool]:
+    """Return a resolved model path and flag whether it is local."""
+    if os.path.isdir(model_name):
+        return model_name, True
+
+    if model_cache_dir:
+        # Look for both Hugging Face style (nested) and flattened cache layouts
+        nested_path = os.path.join(model_cache_dir, model_name.replace('/', os.sep))
+        if os.path.isdir(nested_path):
+            return nested_path, True
+
+        flattened_path = os.path.join(model_cache_dir, model_name.replace('/', '__'))
+        if os.path.isdir(flattened_path):
+            return flattened_path, True
+
+    return model_name, False
+
+
+def register_lora_adapter(
+    config_path: Union[str, os.PathLike],
+    base_model_name: str,
+    adapter_name: str,
+    adapter_path: Union[str, os.PathLike],
+    description: Optional[str] = None,
+    logger: Optional[TrainingLogger] = None,
+):
+    """Persist adapter metadata so merge scripts discover new runs automatically."""
+
+    config_path = Path(config_path)
+    if not config_path.is_absolute():
+        config_path = (Path(__file__).resolve().parent / config_path).resolve()
+
+    adapter_path = Path(adapter_path).resolve()
+
+    try:
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+
+        if config_path.exists():
+            with config_path.open('r', encoding='utf-8') as f:
+                config = json.load(f)
+        else:
+            config = {"base_model": base_model_name, "adapters": []}
+
+        if config.get("base_model") and config["base_model"] != base_model_name:
+            if logger:
+                logger.logger.warning(
+                    "Adapter registry base_model mismatch (%s vs %s); keeping existing value.",
+                    config["base_model"],
+                    base_model_name,
+                )
+        else:
+            config["base_model"] = base_model_name
+
+        project_root = Path(__file__).resolve().parent
+        try:
+            relative_path = adapter_path.relative_to(project_root)
+        except ValueError:
+            relative_path = adapter_path
+
+        adapter_entry = {
+            "name": adapter_name,
+            "path": str(relative_path).replace('\\', '/'),
+            "description": description or "",
+            "training_date": datetime.now().strftime("%Y-%m-%d"),
+        }
+
+        config["adapters"] = [
+            existing
+            for existing in config.get("adapters", [])
+            if existing.get("path") != adapter_entry["path"]
+        ]
+        config["adapters"].append(adapter_entry)
+
+        with config_path.open('w', encoding='utf-8') as f:
+            json.dump(config, f, indent=4)
+
+        if logger:
+            logger.logger.info(
+                "Registered LoRA adapter '%s' at %s in %s",
+                adapter_entry["name"],
+                adapter_entry["path"],
+                config_path,
+            )
+
+    except Exception:
+        if logger:
+            logger.logger.warning(
+                "Failed to update adapter registry at %s",
+                config_path,
+                exc_info=True,
+            )
+        else:
+            logging.warning("Failed to update adapter registry at %s", config_path, exc_info=True)
+
+
 def train(
     # Model arguments
     model_name: str = "Qwen/Qwen-0.5B",
@@ -324,12 +420,18 @@ def train(
     prompt_template_type: Optional[str] = None,
     prompt_template: Optional[Union[str, Dict]] = None,
     
-    # Wandb arguments
-    wandb_project: str = "qlora-finetune",
-    wandb_run_name: Optional[str] = None,
-    wandb_watch: str = "gradients",
-    wandb_log_model: str = "checkpoint",
-    report_to: List[str] = field(default_factory=lambda: ["wandb"]),
+    # Tracking arguments
+    run_name: Optional[str] = None,
+    report_to: Optional[Union[str, List[str]]] = None,
+
+    # Model cache handling
+    model_cache_dir: Optional[str] = None,
+
+    # Adapter registry options
+    register_adapter: bool = True,
+    adapter_name: Optional[str] = None,
+    adapter_description: Optional[str] = None,
+    adapter_config_path: Optional[str] = None,
     
     # Model saving and loading
     save_safetensors: bool = True,
@@ -357,39 +459,21 @@ def train(
         
         # Log system information
         logger.log_system_info()
-        
-        # Initialize wandb
-        if wandb_run_name is None:
-            wandb_run_name = f"{model_name.split('/')[-1]}-{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        
+
+        if isinstance(register_adapter, str):
+            register_adapter = register_adapter.strip().lower() not in {"false", "0", "no", "off"}
+
+        # Determine run name for logging
+        if run_name is None:
+            run_name = f"{model_name.split('/')[-1]}-{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
         # Create output directory
         os.makedirs(output_dir, exist_ok=True)
-        
-        wandb.init(
-            project=wandb_project,
-            name=wandb_run_name,
-            config={
-                "model_name": model_name,
-                "dataset_path": dataset_path,
-                "max_samples": max_samples,
-                "max_length": max_length,
-                "num_train_epochs": num_train_epochs,
-                "batch_size": per_device_train_batch_size,
-                "learning_rate": learning_rate,
-                "weight_decay": weight_decay,
-                "warmup_ratio": warmup_ratio,
-                "lr_scheduler": lr_scheduler_type,
-                "lora_r": lora_r,
-                "lora_alpha": lora_alpha,
-                "lora_dropout": lora_dropout,
-                "bits": bits,
-                "double_quant": double_quant,
-                "quant_type": quant_type,
-            },
-            # Disable model logging to avoid directory issues
-            settings=wandb.Settings(start_method="thread", _disable_stats=True)
-        )
-        
+
+        # Resolve model path for offline usage if needed
+        resolved_model_name, using_local_model = resolve_model_path(model_name, model_cache_dir)
+        local_only = using_local_model or os.environ.get("TRANSFORMERS_OFFLINE", "0") == "1"
+
         # Log configuration
         config = {
             "Model": {
@@ -412,26 +496,27 @@ def train(
                 "warmup_ratio": warmup_ratio,
                 "lr_scheduler": lr_scheduler_type
             },
-            "LoRA": {
-                "r": lora_r,
-                "alpha": lora_alpha,
-                "dropout": lora_dropout
-            },
-            "Wandb": {
-                "project": wandb_project,
-                "run_name": wandb_run_name,
-                "watch": wandb_watch,
-                "log_model": wandb_log_model
+            "Tracking": {
+                "run_name": run_name,
+                "report_to": report_to if report_to is not None else "none"
             }
         }
         logger.log_config(config)
         
         # Load tokenizer
         logger.logger.info("Loading tokenizer...")
-        tokenizer = AutoTokenizer.from_pretrained(
-            model_name,
-            trust_remote_code=trust_remote_code
-        )
+        try:
+            tokenizer = AutoTokenizer.from_pretrained(
+                resolved_model_name,
+                trust_remote_code=trust_remote_code,
+                local_files_only=local_only,
+            )
+        except OSError as err:
+            logger.log_error(
+                "Failed to load tokenizer. Ensure the model is available locally or that internet access is enabled.",
+                err,
+            )
+            raise
         if not tokenizer.pad_token_id:
             tokenizer.pad_token_id = tokenizer.eos_token_id
             
@@ -445,12 +530,20 @@ def train(
             bnb_4bit_compute_dtype=torch.float16,
         )
         
-        model = AutoModelForCausalLM.from_pretrained(
-            model_name,
-            quantization_config=bnb_config,
-            device_map="auto",
-            trust_remote_code=trust_remote_code,
-        )
+        try:
+            model = AutoModelForCausalLM.from_pretrained(
+                resolved_model_name,
+                quantization_config=bnb_config,
+                device_map="auto",
+                trust_remote_code=trust_remote_code,
+                local_files_only=local_only,
+            )
+        except OSError as err:
+            logger.log_error(
+                "Failed to load model weights. Provide a local path via --model_name or --model_cache_dir, or enable network access.",
+                err,
+            )
+            raise
         model.config.use_cache = False
         
         # Log model information
@@ -460,12 +553,6 @@ def train(
             "Percentage of trainable parameters": (sum(p.numel() for p in model.parameters() if p.requires_grad) / sum(p.numel() for p in model.parameters())) * 100,
         }
         logger.log_model_info(model_info)
-        wandb.log({"model_info": model_info})
-        
-        # Watch model with wandb
-        if wandb_watch:
-            wandb.watch(model, log=wandb_watch, log_freq=max(100, logging_steps))
-        
         # Prepare model for k-bit training
         logger.logger.info("Preparing model for k-bit training...")
         model = prepare_model_for_kbit_training(model)
@@ -481,7 +568,8 @@ def train(
             input_column=input_column,
             target_column=target_column,
             max_samples=max_samples,
-            prompt_template=prompt_template
+            prompt_template=prompt_template,
+            logger=logger,
         )
         logger.log_dataset_info(dataset)
         
@@ -525,7 +613,7 @@ def train(
         logger.logger.info("Configuring training arguments...")
         training_args = TrainingArguments(
             output_dir=output_dir,
-            run_name=wandb_run_name,  # Set explicit run name for wandb
+            run_name=run_name,
             num_train_epochs=num_train_epochs,
             per_device_train_batch_size=per_device_train_batch_size,
             learning_rate=learning_rate,
@@ -536,7 +624,7 @@ def train(
             save_steps=save_steps,
             save_total_limit=save_total_limit,
             logging_dir=os.path.join(output_dir, "logs"),
-            report_to=report_to,
+            report_to=report_to if report_to is not None else "none",
             remove_unused_columns=False,
             hub_strategy="end",
             hub_model_id=None,
@@ -562,13 +650,27 @@ def train(
         # Save model
         logger.logger.info("Saving model...")
         trainer.save_model(output_dir)
-        
-        # Finish wandb run
-        wandb.finish()
+
+        if register_adapter:
+            adapter_label = adapter_name or dataset_name or Path(output_dir).name
+            description = adapter_description or f"LoRA run saved at {Path(output_dir).name}"
+            registry_path = (
+                Path(adapter_config_path)
+                if adapter_config_path
+                else Path(__file__).resolve().parent / "config" / "adapters.json"
+            )
+            register_lora_adapter(
+                config_path=registry_path,
+                base_model_name=model_name,
+                adapter_name=adapter_label,
+                adapter_path=output_dir,
+                description=description,
+                logger=logger,
+            )
         
         logger.logger.info("Training completed successfully!")
         return True
-        
+
     except Exception as e:
         if logger:
             logger.logger.error("Error: Training failed")
@@ -578,12 +680,8 @@ def train(
             print("Error: Training failed")
             print("Exception details:")
             print(traceback.format_exc())
-        
-        # Ensure wandb run is finished even if there's an error
-        if wandb.run is not None:
-            wandb.finish()
-        
-        return False
+
+        raise
 
 if __name__ == "__main__":
     import fire

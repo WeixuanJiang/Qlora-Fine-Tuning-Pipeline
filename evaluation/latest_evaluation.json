@@ -1,0 +1,276 @@
+{
+    "metadata": {
+        "evaluation_date": "2025-09-21T11:16:00.917164",
+        "predictions_file": "predictions/predictions.json",
+        "reference_file": "data/physics_test_qa.json",
+        "model": "gpt-4o"
+    },
+    "evaluations": [
+        {
+            "sample_id": 0,
+            "question": "Question: What is Newton's first law of motion?",
+            "reference": "Answer: Newton's first law of motion states that an object will remain at rest or in uniform motion in a straight line unless acted upon by an external force. This is also known as the law of inertia.",
+            "prediction": "Synthetic completion #1 for: Question: What is superpositio...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is completely irrelevant to the question asked. The question was about Newton's first law of motion, which pertains to physics and the concept of inertia. However, the model response begins with 'Synthetic completion #1 for: Question: What is superpositio...' which does not address the question at all. It seems to be an incomplete or incorrect response that does not provide any information related to Newton's first law of motion. Therefore, it scores zero across all metrics: relevance, completeness, clarity, and factual accuracy."
+            }
+        },
+        {
+            "sample_id": 1,
+            "question": "Question:     ",
+            "reference": "Answer: A prism separates white light into different colors through a process called dispersion. When white light enters the prism, it is refracted, or bent, at different angles depending on the wavelength of each color. This causes the light to spread out into a spectrum of colors.",
+            "prediction": "Synthetic completion #2 for: Question: Can you explain quan...",
+            "metrics": {
+                "relevance_score": 2.0,
+                "completeness_score": 1.0,
+                "clarity_score": 1.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is not relevant to the question about how a prism separates white light into different colors. Instead, it appears to be an incomplete or unrelated response, possibly intended for a different question about quantum mechanics or another topic. The response does not address the process of dispersion, refraction, or the separation of light into a spectrum of colors, which are key elements of the reference answer. Therefore, it lacks completeness and factual accuracy. Additionally, the response is unclear and lacks structure, as it does not provide any coherent information related to the original question."
+            }
+        },
+        {
+            "sample_id": 2,
+            "question": "Question: What is the principle of superposition in physics?",
+            "reference": "Answer: The principle of superposition states that when two or more waves overlap in space, the resulting wave is the sum of the individual waves. This principle applies to various types of waves, including sound waves, light waves, and water waves.",
+            "prediction": "Synthetic completion #3 for: Question: What is the Heisenbe...",
+            "metrics": {
+                "relevance_score": 2.0,
+                "completeness_score": 1.0,
+                "clarity_score": 1.0,
+                "factual_accuracy": 1.0,
+                "explanation": "The model response is not relevant to the question asked. The question is about the principle of superposition in physics, but the response seems to be an incomplete or incorrect reference to the Heisenberg Uncertainty Principle, which is unrelated to the principle of superposition. Therefore, the response does not address the question at all, leading to a low relevance score. The completeness score is also low because the response does not provide any information about the principle of superposition. Clarity is poor as the response is cut off and does not form a coherent or complete thought. Factual accuracy is low because the response does not contain any factual information relevant to the principle of superposition. Overall, the response fails to meet the requirements of the question in all evaluated aspects."
+            }
+        },
+        {
+            "sample_id": 3,
+            "question": "Question: How does the Doppler effect explain the change in frequency of a sound wave?",
+            "reference": "Answer: The Doppler effect explains the change in frequency of a sound wave as the source of the sound moves relative to an observer. If the source is moving towards the observer, the frequency appears higher, and if it is moving away, the frequency appears lower.",
+            "prediction": "Synthetic completion #4 for: Question: What is a quantum st...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is completely irrelevant to the question asked. The question pertains to the Doppler effect and its explanation of the change in frequency of a sound wave, while the model response seems to be an incomplete or incorrect reference to a different topic, possibly related to quantum mechanics. There is no information provided that addresses the Doppler effect, making the response entirely incomplete and factually inaccurate in the context of the question. Additionally, the response lacks clarity and structure as it does not form a coherent or relevant answer to the question posed."
+            }
+        },
+        {
+            "sample_id": 4,
+            "question": "Question: What is the difference between speed and velocity?",
+            "reference": "Answer: Speed is a scalar quantity that refers to how fast an object is moving, regardless of direction. Velocity is a vector quantity that includes both the speed and direction of the object's motion.",
+            "prediction": "Synthetic completion #5 for: Question: What does wavefuncti...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is completely irrelevant to the question asked. The question is about the difference between speed and velocity, which are concepts in physics related to motion. However, the model response starts with 'Synthetic completion #5 for: Question: What does wavefuncti...' which does not address the question at all. It seems to be an incomplete or unrelated response, possibly referencing a different topic entirely. Therefore, it scores a 0 in all categories: relevance, completeness, clarity, and factual accuracy, as it does not provide any information related to the original question."
+            }
+        },
+        {
+            "sample_id": 5,
+            "question": "Question: What is the Heisenberg Uncertainty Principle?",
+            "reference": "Answer: The Heisenberg Uncertainty Principle is a fundamental concept in quantum mechanics that states it is impossible to simultaneously know both the exact position and exact momentum of a particle. The more precisely one is known, the less precisely the other can be known.",
+            "prediction": "Synthetic completion #6 for: Question: How does quantum tun...",
+            "metrics": {
+                "relevance_score": 2.0,
+                "completeness_score": 1.0,
+                "clarity_score": 1.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is not relevant to the question asked. The question was about the Heisenberg Uncertainty Principle, a fundamental concept in quantum mechanics, but the response seems to be an incomplete or incorrect reference to a different topic, possibly quantum tunneling, as indicated by 'Synthetic completion #6 for: Question: How does quantum tun...'. This response does not address the Heisenberg Uncertainty Principle at all, resulting in a low relevance score. The completeness score is also low because the response does not provide any information about the principle in question. Clarity is poor because the response is not coherent or complete, and factual accuracy is zero because the response does not contain any factual information related to the Heisenberg Uncertainty Principle."
+            }
+        },
+        {
+            "sample_id": 6,
+            "question": "Question: How does a transformer work in an electrical circuit?",
+            "reference": "Answer: A transformer works by using electromagnetic induction to transfer electrical energy between two or more circuits. It consists of two coils of wire, called the primary and secondary coils, wound around a magnetic core. When an alternating current flows through the primary coil, it creates a magnetic field that induces a voltage in the secondary coil.",
+            "prediction": "Synthetic completion #7 for: Question: What is a photon?...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is completely irrelevant to the question asked. The question is about how a transformer works in an electrical circuit, but the response provided is about a photon, which is unrelated to the topic of transformers. Therefore, the response does not address any aspect of the question, resulting in a relevance score of 0. Since the response does not provide any information about transformers, it is incomplete, leading to a completeness score of 0. The clarity score is also 0 because the response does not pertain to the question, making it unclear in the context of the question asked. Finally, the factual accuracy score is 0 because the response does not contain any factual information relevant to the question about transformers."
+            }
+        },
+        {
+            "sample_id": 7,
+            "question": "Question: What is the photoelectric effect?",
+            "reference": "Answer: The photoelectric effect is the phenomenon where electrons are emitted from a material when it is exposed to light of a certain frequency. This effect demonstrates the particle nature of light and was explained by Albert Einstein, who proposed that light consists of particles called photons.",
+            "prediction": "Synthetic completion #8 for: Question: Can you describe qua...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response does not provide any relevant information about the photoelectric effect. It appears to be an incomplete or incorrect response, as it does not address the question at all. The response seems to be a placeholder or an error message rather than an actual answer. Therefore, it scores zero in all categories: relevance, completeness, clarity, and factual accuracy, as it fails to provide any meaningful content related to the question asked."
+            }
+        },
+        {
+            "sample_id": 8,
+            "question": "Question: What is the significance of E=mc² in physics?",
+            "reference": "Answer: E=mc² is Einstein's equation from his theory of relativity, which states that energy (E) is equal to mass (m) times the speed of light (c) squared. This equation shows the equivalence of mass and energy, implying that mass can be converted into energy and vice versa.",
+            "prediction": "Synthetic completion #9 for: Question: What is a quantum co...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is completely irrelevant to the question asked. The question pertains to the significance of the equation E=mc² in physics, which is related to Einstein's theory of relativity and the equivalence of mass and energy. However, the model response begins with 'Synthetic completion #9 for: Question: What is a quantum co...' which does not address the question at all. It appears to be an incomplete or incorrect response, possibly due to a system error or misalignment. As such, it scores 0 in all categories: relevance, completeness, clarity, and factual accuracy, as it does not provide any information related to the original question."
+            }
+        },
+        {
+            "sample_id": 9,
+            "question": "Question: How does a black hole form?",
+            "reference": "Answer: A black hole forms when a massive star exhausts its nuclear fuel and collapses under its own gravity. If the core's mass is sufficient, the gravitational pull becomes so strong that not even light can escape, resulting in a black hole.",
+            "prediction": "Synthetic completion #10 for: Question: What is the signific...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response does not address the question about how a black hole forms. Instead, it appears to be an incomplete or incorrect response, possibly referencing a different question or task. As a result, it scores 0 in all categories: relevance, completeness, clarity, and factual accuracy. The response does not provide any information related to the formation of black holes, making it entirely irrelevant and uninformative for the given question."
+            }
+        },
+        {
+            "sample_id": 10,
+            "question": "Question: What is the difference between conductors and insulators?",
+            "reference": "Answer: Conductors are materials that allow the flow of electric charge, typically electrons, with little resistance. Insulators, on the other hand, are materials that resist the flow of electric charge and do not conduct electricity well.",
+            "prediction": "Synthetic completion #11 for: Question: What are qubits?...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is completely irrelevant to the question asked. The question was about the difference between conductors and insulators, which pertains to materials and their electrical properties. However, the model response discusses qubits, which are related to quantum computing and have no connection to the topic of conductors and insulators. Therefore, the response scores a 0 in relevance, completeness, clarity, and factual accuracy as it does not address the question in any way, nor does it provide any information related to the topic of conductors and insulators."
+            }
+        },
+        {
+            "sample_id": 11,
+            "question": "Question: What is the role of the Higgs boson in particle physics?",
+            "reference": "Answer: The Higgs boson is a fundamental particle associated with the Higgs field, which gives mass to other particles. Its discovery at the Large Hadron Collider in 2012 confirmed the existence of the Higgs field and was a significant milestone in understanding the Standard Model of particle physics.",
+            "prediction": "Synthetic completion #12 for: Question: What is the double-s...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is completely irrelevant to the question asked. It does not address the role of the Higgs boson in particle physics at all. Instead, it seems to be an incomplete or incorrect response that does not pertain to the topic. As a result, the response scores a 0 in all categories: relevance, completeness, clarity, and factual accuracy. The response does not provide any information related to the Higgs boson, its role, or its significance in the Standard Model of particle physics, which are all crucial elements of a correct and complete answer to the question posed."
+            }
+        },
+        {
+            "sample_id": 12,
+            "question": "Question: How does the conservation of momentum apply in a collision?",
+            "reference": "Answer: The conservation of momentum states that the total momentum of a closed system remains constant before and after a collision, provided no external forces act on it. In a collision, the momentum lost by one object is gained by another, ensuring the total momentum is conserved.",
+            "prediction": "Synthetic completion #13 for: Question: Explain the concept ...",
+            "metrics": {
+                "relevance_score": 2.0,
+                "completeness_score": 1.0,
+                "clarity_score": 1.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is not relevant to the question asked. It does not address the concept of conservation of momentum in a collision, nor does it provide any information related to the topic. The response seems to be an incomplete or placeholder text ('Synthetic completion #13 for: Question: Explain the concept ...'), which does not contribute any meaningful content. Therefore, it scores very low on relevance and completeness. Clarity is also poor because the response does not convey any coherent information. Factual accuracy cannot be assessed as there is no factual content provided in the response."
+            }
+        },
+        {
+            "sample_id": 13,
+            "question": "Question: What is the difference between a scalar and a vector quantity?",
+            "reference": "Answer: A scalar quantity has only magnitude, such as temperature or mass, while a vector quantity has both magnitude and direction, such as velocity or force.",
+            "prediction": "Synthetic completion #14 for: Question: What is the role of ...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is completely irrelevant to the question asked. The question was about the difference between scalar and vector quantities, but the response provided is a placeholder text ('Synthetic completion #14 for: Question: What is the role of ...') that does not address the question at all. Therefore, it scores 0 in all categories: relevance, completeness, clarity, and factual accuracy. The response does not provide any information related to scalar or vector quantities, nor does it offer any factual content that could be evaluated for accuracy. It is not structured or clear because it does not attempt to answer the question posed."
+            }
+        },
+        {
+            "sample_id": 14,
+            "question": "Question: How does a gyroscope maintain its orientation?",
+            "reference": "Answer: A gyroscope maintains its orientation due to the principle of angular momentum conservation. When spinning, the gyroscope resists changes to its axis of rotation, allowing it to maintain its orientation even when the base is moved.",
+            "prediction": "Synthetic completion #15 for: Question: What is a quantum fi...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is completely irrelevant to the question asked. The question is about how a gyroscope maintains its orientation, which involves principles of physics such as angular momentum conservation. However, the model response seems to be an incomplete and unrelated statement about a 'quantum fi...' which does not pertain to gyroscopes or their operation. Therefore, the response scores a 0 in all categories: relevance, completeness, clarity, and factual accuracy, as it does not address the question in any meaningful way."
+            }
+        },
+        {
+            "sample_id": 15,
+            "question": "Question: What is the significance of the double-slit experiment?",
+            "reference": "Answer: The double-slit experiment demonstrates the wave-particle duality of light and matter. When particles such as electrons pass through two slits, they create an interference pattern on a screen, suggesting wave-like behavior. However, when observed, they behave like particles, highlighting the dual nature of quantum objects.",
+            "prediction": "Synthetic completion #16 for: Question: Describe the concept...",
+            "metrics": {
+                "relevance_score": 2.0,
+                "completeness_score": 1.0,
+                "clarity_score": 1.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is not relevant to the question about the significance of the double-slit experiment. It appears to be an incomplete or incorrect response, as it starts with 'Synthetic completion #16 for: Question: Describe the concept...' which does not address the question at all. Therefore, it scores very low on relevance and completeness. The response lacks any factual content related to the double-slit experiment, resulting in a factual accuracy score of 0. Additionally, the response is not clear or structured, as it does not provide any coherent information or explanation, leading to a low clarity score."
+            }
+        },
+        {
+            "sample_id": 16,
+            "question": "Question: How does nuclear fission differ from nuclear fusion?",
+            "reference": "Answer: Nuclear fission is the process of splitting a heavy atomic nucleus into smaller nuclei, releasing energy. Nuclear fusion, on the other hand, involves combining light atomic nuclei to form a heavier nucleus, also releasing energy. Fusion powers the sun and stars, while fission is used in nuclear reactors.",
+            "prediction": "Synthetic completion #17 for: Question: What are virtual par...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is completely irrelevant to the question asked. The question was about the differences between nuclear fission and nuclear fusion, but the response provided is about virtual particles, which is unrelated to the topic of nuclear reactions. Therefore, the response scores a 0 in relevance, completeness, clarity, and factual accuracy, as it does not address the question in any way, nor does it provide any factual information related to the topic of nuclear fission or fusion."
+            }
+        },
+        {
+            "sample_id": 17,
+            "question": "Question: What is the role of dark matter in the universe?",
+            "reference": "Answer: Dark matter is a form of matter that does not emit, absorb, or reflect light, making it invisible and detectable only through its gravitational effects. It is believed to make up about 27% of the universe and plays a crucial role in the formation and structure of galaxies.",
+            "prediction": "Synthetic completion #18 for: Question: What is a Bose-Einst...",
+            "metrics": {
+                "relevance_score": 0.0,
+                "completeness_score": 0.0,
+                "clarity_score": 0.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is completely irrelevant to the question asked. The question pertains to the role of dark matter in the universe, while the model response seems to be an incomplete or incorrect reference to a different topic, possibly related to Bose-Einstein statistics or condensates, which are unrelated to dark matter. Therefore, the response does not address any aspect of the question, lacks any relevant information, and is not factually accurate in the context of the question. The response is also incomplete and lacks clarity as it does not provide any coherent or structured information related to the question. Overall, the response fails to meet any of the evaluation criteria."
+            }
+        },
+        {
+            "sample_id": 18,
+            "question": "Question: How does the greenhouse effect contribute to global warming?",
+            "reference": "Answer: The greenhouse effect occurs when greenhouse gases in Earth's atmosphere trap heat from the sun, preventing it from escaping back into space. This trapped heat leads to an increase in Earth's average temperature, contributing to global warming and climate change.",
+            "prediction": "Synthetic completion #19 for: Question: What is the role of ...",
+            "metrics": {
+                "relevance_score": 2.0,
+                "completeness_score": 1.0,
+                "clarity_score": 1.0,
+                "factual_accuracy": 1.0,
+                "explanation": "The model response is not relevant to the question as it does not provide any information about the greenhouse effect or its contribution to global warming. The response appears to be an incomplete or incorrect output, as it only mentions 'Synthetic completion #19 for: Question: What is the role of ...' without addressing the actual question. Therefore, it lacks completeness and clarity, as it does not form a coherent or informative answer. Additionally, there is no factual content provided, resulting in a low score for factual accuracy. Overall, the response fails to meet the criteria for a satisfactory answer."
+            }
+        },
+        {
+            "sample_id": 19,
+            "question": "Question: What is the significance of Schrödinger's cat thought experiment?",
+            "reference": "Answer: Schrödinger's cat is a thought experiment that illustrates the concept of superposition in quantum mechanics. It describes a scenario where a cat in a sealed box is simultaneously alive and dead until observed. This paradox highlights the strange and non-intuitive nature of quantum states.",
+            "prediction": "Synthetic completion #20 for: Question: Explain the concept ...",
+            "metrics": {
+                "relevance_score": 2.0,
+                "completeness_score": 1.0,
+                "clarity_score": 1.0,
+                "factual_accuracy": 0.0,
+                "explanation": "The model response is not relevant to the question as it does not provide any information about Schrödinger's cat or its significance. It appears to be an incomplete or placeholder response ('Synthetic completion #20 for: Question: Explain the concept ...'), which does not address the question at all. Therefore, it scores very low on relevance and completeness. The clarity score is also low because the response is not a coherent or meaningful answer to the question. Factual accuracy cannot be assessed as there is no factual content related to Schrödinger's cat or quantum mechanics in the response."
+            }
+        }
+    ],
+    "aggregate_metrics": {
+        "avg_relevance": 0.7,
+        "avg_completeness": 0.35,
+        "avg_clarity": 0.35,
+        "avg_factual_accuracy": 0.1
+    }
+}

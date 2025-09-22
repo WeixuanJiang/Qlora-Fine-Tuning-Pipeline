@@ -1,0 +1,45 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+
+# Environment files
+.env
+.venv/
+venv/
+.python-version
+
+# OS / editor leftovers
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Training outputs and checkpoints
+models/
+merged_model/
+predictions/
+**/logs/
+*.pt
+*.bin
+*.safetensors
+
+# Evaluation artifacts
+evaluation/run_*/
+
+# Weights & Biases local runs
+scripts/wandb/
+
+# Dataset generation intermediates
+data/processed/
+data/*.tmp
+
+# Miscellaneous
+*.log
+*.tmp
+*.swp
+
+# Frontend build artifacts
+frontend/node_modules/
+frontend/dist/

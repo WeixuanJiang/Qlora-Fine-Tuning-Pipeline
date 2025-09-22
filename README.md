@@ -26,10 +26,11 @@ Training progress and metrics will be logged to Weights & Biases.
 
 ### 3. Merging Adapters
 
-After training multiple adapters, merge them:
+After training, merge the most recent adapter (or pass a path/override when needed):
 ```bash
 cd scripts
-run_merge_multiple_loras.bat
+./run_merge_lora.sh            # merges most recent adapter
+# ./run_merge_lora.sh path/to/adapter  # merge specific adapter
 ```
 
 ### 4. Chat Interface
@@ -39,6 +40,21 @@ Launch the Streamlit chat interface:
 cd streamlit_app
 streamlit run app.py
 ```
+
+### 5. Web UI (React) & Docker Compose
+
+A full control center is available via a React frontend (parameter-rich forms for training, generation, evaluation, and merging) backed by a FastAPI API. Bring the stack up with Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+Services launched:
+
+- **Backend** (FastAPI) on `http://localhost:8000`
+- **Frontend** (React) on `http://localhost:3000`
+
+Both containers mount the repository so outputs appear on the host. Provide required environment variables (e.g. `OPENAI_API_KEY`, huggingface credentials) in `.env` before starting the stack. Use the “Jobs” view in the UI to monitor long-running operations.
 
 ## Training Monitoring
 

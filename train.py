@@ -3,6 +3,7 @@ import sys
 import json
 import logging
 import traceback
+import re
 from pathlib import Path
 from typing import Optional, Dict, List, Union, Tuple
 from datetime import datetime
@@ -31,6 +32,23 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout)
     ]
 )
+
+WINDOWS_DRIVE_PATTERN = re.compile(r'^([a-zA-Z]):[\\/](.*)$')
+
+
+def normalize_path_input(path: Optional[str]) -> Optional[str]:
+    if path is None:
+        return None
+    raw = path.strip()
+    if not raw:
+        return raw
+    match = WINDOWS_DRIVE_PATTERN.match(raw)
+    if match:
+        drive = match.group(1).lower()
+        rest = match.group(2).replace('\\', '/').lstrip('/')
+        return f"/mnt/{drive}/{rest}"
+    return raw.replace('\\', '/')
+
 
 class TrainingLogger:
     """Custom logger for training process"""
@@ -296,6 +314,7 @@ def register_lora_adapter(
     if not config_path.is_absolute():
         config_path = (Path(__file__).resolve().parent / config_path).resolve()
 
+    adapter_path = normalize_path_input(str(adapter_path))
     adapter_path = Path(adapter_path).resolve()
 
     try:
@@ -361,7 +380,7 @@ def register_lora_adapter(
 
 def train(
     # Model arguments
-    model_name: str = "Qwen/Qwen-0.5B",
+    model_name: str = "Qwen/Qwen2.5-0.5B-Instruct",
     dataset_path: Optional[str] = None,
     dataset_name: Optional[str] = None,
     output_dir: str = "output",
@@ -448,27 +467,47 @@ def train(
     try:
         # Set random seed
         set_seed(seed)
-        
-        # Create output directory
+
+        model_name = normalize_path_input(model_name)
+        dataset_path = normalize_path_input(dataset_path)
+        output_dir = normalize_path_input(output_dir)
+        model_cache_dir = normalize_path_input(model_cache_dir)
+        adapter_config_path = normalize_path_input(adapter_config_path)
+        resume_from_checkpoint = normalize_path_input(resume_from_checkpoint)
+
+        # Determine run name and target output directory
+        if run_name is None:
+            run_name = f"{model_name.split('/')[-1]}-{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+        base_output_dir = (output_dir or 'output').strip()
+        if not base_output_dir:
+            base_output_dir = 'output'
+
+        output_path = Path(base_output_dir).expanduser()
+        if output_path.as_posix().rstrip('/') == 'output':
+            output_path = output_path / run_name
+
+        output_dir = str(output_path)
         os.makedirs(output_dir, exist_ok=True)
-        
+
         # Initialize logger
         logger = TrainingLogger(
             log_dir=os.path.join(output_dir, "logs")
         )
-        
+
+        # Detect device capabilities early and log environment
+        use_cuda = torch.cuda.is_available()
+        if not use_cuda:
+            logger.logger.warning(
+                "CUDA device not detected. Training will run on CPU which is significantly slower. "
+                "For best results, run with a GPU or adjust parameters such as quantization bits."
+            )
+
         # Log system information
         logger.log_system_info()
 
         if isinstance(register_adapter, str):
             register_adapter = register_adapter.strip().lower() not in {"false", "0", "no", "off"}
-
-        # Determine run name for logging
-        if run_name is None:
-            run_name = f"{model_name.split('/')[-1]}-{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-
-        # Create output directory
-        os.makedirs(output_dir, exist_ok=True)
 
         # Resolve model path for offline usage if needed
         resolved_model_name, using_local_model = resolve_model_path(model_name, model_cache_dir)
@@ -522,21 +561,37 @@ def train(
             
         # Load model
         logger.logger.info("Loading model...")
-        bnb_config = BitsAndBytesConfig(
-            load_in_4bit=bits == 4,
-            load_in_8bit=bits == 8,
-            bnb_4bit_quant_type=quant_type,
-            bnb_4bit_double_quant=double_quant,
-            bnb_4bit_compute_dtype=torch.float16,
-        )
-        
+        use_bnb = use_cuda and (load_in_4bit or load_in_8bit or bits in (4, 8))
+        if use_bnb:
+            bnb_config = BitsAndBytesConfig(
+                load_in_4bit=bits == 4 or load_in_4bit,
+                load_in_8bit=bits == 8 or load_in_8bit,
+                bnb_4bit_quant_type=quant_type,
+                bnb_4bit_double_quant=double_quant,
+                bnb_4bit_compute_dtype=torch.float16,
+            )
+        else:
+            if (load_in_4bit or load_in_8bit or bits in (4, 8)) and not use_cuda:
+                logger.logger.warning(
+                    "Quantized loading requested but no GPU is available. Falling back to full precision on CPU."
+                )
+            bnb_config = None
+
         try:
-            model = AutoModelForCausalLM.from_pretrained(
-                resolved_model_name,
-                quantization_config=bnb_config,
-                device_map="auto",
+            load_kwargs = dict(
                 trust_remote_code=trust_remote_code,
                 local_files_only=local_only,
+            )
+            if bnb_config:
+                load_kwargs["quantization_config"] = bnb_config
+                load_kwargs["device_map"] = "auto"
+            else:
+                load_kwargs["torch_dtype"] = torch.float32
+                load_kwargs["device_map"] = "auto" if use_cuda else None
+
+            model = AutoModelForCausalLM.from_pretrained(
+                resolved_model_name,
+                **load_kwargs,
             )
         except OSError as err:
             logger.log_error(
@@ -546,6 +601,10 @@ def train(
             raise
         model.config.use_cache = False
         
+        if not bnb_config:
+            target_device = torch.device("cuda") if use_cuda else torch.device("cpu")
+            model.to(target_device)
+        
         # Log model information
         model_info = {
             "Total parameters": sum(p.numel() for p in model.parameters()),
@@ -554,8 +613,9 @@ def train(
         }
         logger.log_model_info(model_info)
         # Prepare model for k-bit training
-        logger.logger.info("Preparing model for k-bit training...")
-        model = prepare_model_for_kbit_training(model)
+        if use_bnb:
+            logger.logger.info("Preparing model for k-bit training...")
+            model = prepare_model_for_kbit_training(model)
         
         # Get prompt template
         if prompt_template is None and prompt_template_type:
@@ -611,6 +671,14 @@ def train(
         
         # Training arguments
         logger.logger.info("Configuring training arguments...")
+
+        if not use_cuda and "bnb" in optim.lower():
+            logger.logger.warning("Optimizer %s requires CUDA. Falling back to adamw_torch for CPU training.", optim)
+            optim = "adamw_torch"
+
+        effective_fp16 = fp16 and use_cuda
+        effective_bf16 = bf16 and use_cuda and torch.cuda.is_bf16_supported()
+
         training_args = TrainingArguments(
             output_dir=output_dir,
             run_name=run_name,
@@ -631,6 +699,10 @@ def train(
             push_to_hub=False,
             optim=optim,
             gradient_checkpointing=True,
+            fp16=effective_fp16,
+            bf16=effective_bf16,
+            no_cuda=not use_cuda,
+            dataloader_pin_memory=use_cuda,
         )
         
         # Initialize trainer
@@ -652,8 +724,8 @@ def train(
         trainer.save_model(output_dir)
 
         if register_adapter:
-            adapter_label = adapter_name or dataset_name or Path(output_dir).name
-            description = adapter_description or f"LoRA run saved at {Path(output_dir).name}"
+            adapter_label = adapter_name or run_name or dataset_name or Path(output_dir).name
+            description = adapter_description or f"Run {run_name} saved at {Path(output_dir).name}"
             registry_path = (
                 Path(adapter_config_path)
                 if adapter_config_path

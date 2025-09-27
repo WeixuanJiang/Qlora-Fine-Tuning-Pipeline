@@ -34,11 +34,20 @@ export default function TrainDatasetUploader({ onUploaded }) {
   };
 
   return (
-    <div style={{ marginTop: '0.5rem' }}>
-      <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.25rem' }}>Upload dataset file</label>
-      <input type="file" accept=".json,.jsonl,.txt" onChange={handleFileChange} disabled={isUploading} />
-      {isUploading && <p style={{ color: '#1d4ed8' }}>Uploading…</p>}
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
+    <div style={{ display: 'grid', gap: '0.4rem' }}>
+      <label style={{ fontWeight: 600 }} htmlFor="dataset-upload">
+        Upload dataset file
+      </label>
+      <input
+        id="dataset-upload"
+        type="file"
+        accept=".json,.jsonl,.txt"
+        onChange={handleFileChange}
+        disabled={isUploading}
+      />
+      <span className="helper-text">Supports JSON, JSONL or TXT. Files are saved inside the data/ directory.</span>
+      {isUploading && <p style={{ color: '#1d4ed8', margin: 0 }}>Uploading…</p>}
+      {error && <p style={{ color: 'crimson', margin: 0 }}>{error}</p>}
     </div>
   );
 }

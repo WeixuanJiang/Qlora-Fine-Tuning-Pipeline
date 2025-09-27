@@ -1,3 +1,5 @@
+name: qlora-copilot
+
 services:
   backend:
     build:
@@ -5,15 +7,32 @@ services:
       dockerfile: backend/Dockerfile
     container_name: qlora-backend
     working_dir: /app
+    restart: unless-stopped
     ports:
       - "8000:8000"
     volumes:
-      - ./:/app
+      - ./:/app:cached
+      - hf_cache:/root/.cache/huggingface
+      - datasets:/app/data
+      - outputs:/app/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${CUDA_VISIBLE_DEVICES_COUNT:-1}
+              capabilities: [gpu]
     env_file:
       - .env
     environment:
       - PYTHONUNBUFFERED=1
       - TRANSFORMERS_OFFLINE=${TRANSFORMERS_OFFLINE:-1}
+      - HF_HOME=/root/.cache/huggingface
+      - TRANSFORMERS_CACHE=/root/.cache/huggingface
+      - DATA_DIR=/app/data
+      - OUTPUT_DIR=/app/output
+      - NVIDIA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-all}
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     command:
       - uvicorn
       - backend.main:app
@@ -27,10 +46,13 @@ services:
       context: frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+        VITE_API_URL: ${VITE_API_URL:-http://backend:8000}
     container_name: qlora-frontend
+    restart: unless-stopped
     ports:
       - "3000:3000"
+    environment:
+      - VITE_API_URL=${VITE_API_URL:-http://backend:8000}
     depends_on:
       - backend
 
@@ -40,14 +62,35 @@ services:
       dockerfile: docker/trainer.Dockerfile
     container_name: qlora-trainer
     working_dir: /workspace
+    profiles:
+      - train
     volumes:
       - ./:/workspace
+      - hf_cache:/root/.cache/huggingface
+      - datasets:/workspace/data
+      - outputs:/workspace/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${CUDA_VISIBLE_DEVICES_COUNT:-1}
+              capabilities: [gpu]
     env_file:
       - .env
     environment:
       - PYTHONUNBUFFERED=1
+      - HF_HOME=/root/.cache/huggingface
+      - TRANSFORMERS_CACHE=/root/.cache/huggingface
+      - NVIDIA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-all}
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     stdin_open: true
     tty: true
     command:
       - bash
       - scripts/run_training.sh
+
+volumes:
+  hf_cache:
+  datasets:
+  outputs:

@@ -66,6 +66,7 @@ class EvaluationMetrics(BaseModel):
 class ModelEvaluator:
     def __init__(self, model_name: str = EVAL_MODEL, temperature: float = EVAL_TEMPERATURE):
         """Initialize the evaluator with GPT-4"""
+        self.model_name = model_name
         self.evaluator = ChatOpenAI(
             model=model_name,
             temperature=temperature,
@@ -158,7 +159,7 @@ Provide a detailed evaluation following the specified metrics."""
                     "evaluation_date": datetime.now().isoformat(),
                     "predictions_file": predictions_file,
                     "reference_file": reference_file,
-                    "model": EVAL_MODEL
+                    "model": self.model_name
                 },
                 "evaluations": [],
                 "aggregate_metrics": {
@@ -217,7 +218,8 @@ Provide a detailed evaluation following the specified metrics."""
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 with open(output_file, 'w', encoding='utf-8') as f:
                     json.dump(results, f, indent=4, ensure_ascii=False)
-            
+                results["metadata"]["output_file"] = str(output_path.resolve())
+
             return results
         
         except Exception as e:

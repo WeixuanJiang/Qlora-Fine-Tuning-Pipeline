@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react';
-import { listAdapters, triggerMerge } from '../utils/api.js';
+import { useEffect, useMemo, useState } from 'react';
+import PageHeader from '../components/PageHeader.jsx';
+import HelpCallout from '../components/HelpCallout.jsx';
+import { getStorageCatalog, triggerMerge, publishMergedModel } from '../utils/api.js';
+import { loadSettings, SETTINGS_EVENT } from '../utils/settings.js';
 
 const defaultState = {
   base_model_name: 'Qwen/Qwen2.5-0.5B-Instruct',
@@ -9,18 +12,48 @@ const defaultState = {
   trust_remote_code: true
 };
 
+const defaultPublishState = {
+  repo_id: '',
+  private: false,
+  commit_message: 'Upload merged model'
+};
+
+
 export default function MergePage() {
   const [form, setForm] = useState(defaultState);
-  const [adapters, setAdapters] = useState([]);
-  const [selectedAdapter, setSelectedAdapter] = useState('');
   const [jobId, setJobId] = useState(null);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
+  const [publishForm, setPublishForm] = useState(defaultPublishState);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishJobId, setPublishJobId] = useState(null);
+  const [publishMessage, setPublishMessage] = useState(null);
+  const [publishError, setPublishError] = useState(null);
+  const [settings, setSettings] = useState(() => loadSettings());
+  const hasHfToken = Boolean(settings.huggingfaceToken);
+  const [catalog, setCatalog] = useState(null);
+  const [catalogError, setCatalogError] = useState(null);
+  const [isCatalogLoading, setIsCatalogLoading] = useState(true);
 
   useEffect(() => {
-    listAdapters()
-      .then(data => setAdapters(data.adapters || []))
-      .catch(err => setError(err.message));
+    getStorageCatalog()
+      .then(data => {
+        setCatalog(data);
+        setCatalogError(null);
+      })
+      .catch(err => setCatalogError(err.message))
+      .finally(() => setIsCatalogLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+    const handleUpdate = event => {
+      setSettings(event.detail || loadSettings());
+    };
+    window.addEventListener(SETTINGS_EVENT, handleUpdate);
+    return () => window.removeEventListener(SETTINGS_EVENT, handleUpdate);
   }, []);
 
   const handleInputChange = event => {
@@ -31,10 +64,12 @@ export default function MergePage() {
     }));
   };
 
-  const handleAdapterSelect = event => {
-    const value = event.target.value;
-    setSelectedAdapter(value);
-    setForm(prev => ({ ...prev, adapter_path: value }));
+  const handlePublishInputChange = event => {
+    const { name, value, type, checked } = event.target;
+    setPublishForm(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
   const handleSubmit = event => {
@@ -56,18 +91,98 @@ export default function MergePage() {
     })
       .then(resp => {
         setJobId(resp.job_id);
-        setMessage('Merge job queued. Monitor progress on Jobs page.');
+        setMessage('Merge job queued. Track status from the Activity tab.');
       })
       .catch(err => setError(err.message));
   };
 
+  const handlePublish = () => {
+    setPublishError(null);
+    setPublishMessage(null);
+
+    if (!form.output_dir || !form.output_dir.trim()) {
+      setPublishError('Output directory is required before uploading.');
+      return;
+    }
+
+    if (!publishForm.repo_id || !publishForm.repo_id.trim()) {
+      setPublishError('Hugging Face repo ID is required.');
+      return;
+    }
+
+    setIsPublishing(true);
+
+    publishMergedModel({
+      source_dir: form.output_dir,
+      repo_id: publishForm.repo_id.trim(),
+      token: settings.huggingfaceToken || undefined,
+      private: publishForm.private,
+      commit_message: publishForm.commit_message.trim() || undefined
+    })
+      .then(resp => {
+        setPublishJobId(resp.job_id);
+        setPublishMessage('Upload queued. Track status from the Activity tab.');
+      })
+      .catch(err => setPublishError(err.message))
+      .finally(() => setIsPublishing(false));
+  };
+
+  const handleReset = () => {
+    setForm(defaultState);
+    setJobId(null);
+    setMessage(null);
+    setError(null);
+    setPublishForm(defaultPublishState);
+    setIsPublishing(false);
+    setPublishJobId(null);
+    setPublishMessage(null);
+    setPublishError(null);
+  };
+
+  const adapterOptions = useMemo(() => {
+    if (!catalog || !Array.isArray(catalog.merge)) {
+      return [];
+    }
+    return catalog.merge.map(entry => ({
+      value: entry.path,
+      label: entry.label || entry.path
+    }));
+  }, [catalog]);
+
+  useEffect(() => {
+    if (!adapterOptions.length) {
+      return;
+    }
+    setForm(prev => {
+      if (adapterOptions.some(option => option.value === prev.adapter_path)) {
+        return prev;
+      }
+      return { ...prev, adapter_path: adapterOptions[0].value };
+    });
+  }, [adapterOptions]);
+
   return (
-    <div className="card">
-      <h2 style={{ marginTop: 0 }}>Merge LoRA Adapter</h2>
-      <form onSubmit={handleSubmit} className="grid">
+    <div className="page page-merge">
+      <PageHeader
+        title="Publish a merged model"
+        lead="Combine your base model and LoRA adapter into a single folder ready for inference or sharing."
+        actions={
+          <button type="button" className="secondary" onClick={handleReset}>
+            Reset form
+          </button>
+        }
+      />
+
+      <HelpCallout title="When should I merge?">
+        Merge once you are happy with evaluation results. The merged folder contains standard weights so downstream teams
+        can run inference without LoRA-specific tooling.
+      </HelpCallout>
+
+      <form onSubmit={handleSubmit} className="card" style={{ display: 'grid', gap: '1.4rem' }}>
         <div className="grid two-columns">
           <div className="field">
-            <label htmlFor="base_model_name">Base Model</label>
+            <label htmlFor="base_model_name">Base model</label>
+
             <input
               id="base_model_name"
               name="base_model_name"
@@ -76,6 +191,7 @@ export default function MergePage() {
               onChange={handleInputChange}
               required
             />
+            <small>Should match the model you fine-tuned.</small>
           </div>
           <div className="field">
             <label htmlFor="device">Device</label>
@@ -86,20 +202,35 @@ export default function MergePage() {
               value={form.device}
               onChange={handleInputChange}
             />
+            <small>Leave on auto to let the backend choose GPU/CPU.</small>
           </div>
+        </div>
+
+        <div className="grid two-columns">
           <div className="field">
-            <label htmlFor="output_dir">Output Directory</label>
-            <input
-              id="output_dir"
-              name="output_dir"
-              type="text"
-              value={form.output_dir}
+            <label htmlFor="adapter_path">Adapter path</label>
+            <select
+              id="adapter_path"
+              name="adapter_path"
+              value={form.adapter_path}
               onChange={handleInputChange}
+              disabled={isCatalogLoading || !adapterOptions.length}
               required
-            />
+            >
+              <option value="" disabled>
+                {isCatalogLoading ? 'Loading adapters…' : 'Select an adapter'}
+              </option>
+              {adapterOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <small>Choose from saved adapters ready for merging.</small>
+            {catalogError && <small style={{ color: 'crimson' }}>{catalogError}</small>}
           </div>
-          <div className="field" style={{ alignItems: 'center', marginTop: '1.9rem' }}>
-            <label htmlFor="trust_remote_code" style={{ fontWeight: 600 }}>Trust Remote Code</label>
+          <div className="field" style={{ alignItems: 'center' }}>
+            <label htmlFor="trust_remote_code">Trust remote code</label>
             <input
               id="trust_remote_code"
               name="trust_remote_code"
@@ -107,40 +238,95 @@ export default function MergePage() {
               checked={form.trust_remote_code}
               onChange={handleInputChange}
             />
+            <small>Required for some base models that register custom layers.</small>
           </div>
         </div>
 
         <div className="field">
-          <label htmlFor="adapter_select">Registered Adapters</label>
-          <select id="adapter_select" value={selectedAdapter} onChange={handleAdapterSelect}>
-            <option value="">-- Choose adapter --</option>
-            {adapters.map((adapter, idx) => (
-              <option key={`${adapter.path}-${idx}`} value={adapter.path}>
-                {adapter.name || 'adapter'} — {adapter.path}
-              </option>
-            ))}
-          </select>
-          <small style={{ color: '#6b7280' }}>Select an adapter from registry or provide a custom path below.</small>
-        </div>
-
-        <div className="field">
-          <label htmlFor="adapter_path">Adapter Path</label>
+          <label htmlFor="output_dir">Output directory</label>
           <input
-            id="adapter_path"
-            name="adapter_path"
+            id="output_dir"
+            name="output_dir"
             type="text"
-            value={form.adapter_path}
+            value={form.output_dir}
             onChange={handleInputChange}
-            placeholder="models/run_YYYY-MM-DD_HHMM"
             required
           />
+          <small>The merged folder will be created here.</small>
         </div>
 
-        <button type="submit" className="primary">Start Merge</button>
+        <div className="button-row">
+          <button type="submit" className="primary">Start merge</button>
+          {jobId && <span className="pill">Job queued · ID {jobId}</span>}
+        </div>
+
+        {message && <p style={{ color: '#065f46', margin: 0 }}>{message}</p>}
+        {error && <p style={{ color: 'crimson', margin: 0 }}>{error}</p>}
       </form>
-      {message && <p style={{ color: '#065f46' }}>{message}</p>}
-      {jobId && <p>Job ID: <code>{jobId}</code></p>}
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
+
+      <div className="card">
+        <h2 className="card-title">Upload to Hugging Face Hub</h2>
+        <p className="muted-text" style={{ marginBottom: '0.75rem' }}>
+          Once the merge is finished, push the merged directory straight to your Hugging Face account.
+        </p>
+
+        <div className="grid two-columns">
+          <div className="field">
+            <label htmlFor="hub_repo_id">Repository ID</label>
+            <input
+              id="hub_repo_id"
+              name="repo_id"
+              type="text"
+              value={publishForm.repo_id}
+              onChange={handlePublishInputChange}
+              placeholder="username/model-name"
+              required
+            />
+            <small>Format: namespace/model-name.</small>
+          </div>
+          <div className="field">
+            <label htmlFor="hub_commit_message">Commit message</label>
+            <input
+              id="hub_commit_message"
+              name="commit_message"
+              type="text"
+              value={publishForm.commit_message}
+              onChange={handlePublishInputChange}
+            />
+          </div>
+        </div>
+
+        <div className="grid two-columns">
+          <div className="field" style={{ alignItems: 'center' }}>
+            <label htmlFor="hub_private">Private repository</label>
+            <input
+              id="hub_private"
+              name="private"
+              type="checkbox"
+              checked={publishForm.private}
+              onChange={handlePublishInputChange}
+            />
+            <small>Enable to keep the repository private.</small>
+          </div>
+          <div className="field">
+            <label>Hugging Face token</label>
+            <div className="muted-text" style={{ margin: 0 }}>
+              Settings token: {hasHfToken ? 'configured' : 'not set'}.
+            </div>
+            <small>Update tokens from the Settings page. They are attached automatically when present.</small>
+          </div>
+        </div>
+
+        <div className="button-row">
+          <button type="button" className="primary" onClick={handlePublish} disabled={isPublishing}>
+            {isPublishing ? 'Uploading...' : 'Upload to Hugging Face'}
+          </button>
+          {publishJobId && <span className="pill">Upload queued · ID {publishJobId}</span>}
+        </div>
+
+        {publishMessage && <p style={{ color: '#0369a1', margin: 0 }}>{publishMessage}</p>}
+        {publishError && <p style={{ color: 'crimson', margin: 0 }}>{publishError}</p>}
+      </div>
     </div>
   );
 }

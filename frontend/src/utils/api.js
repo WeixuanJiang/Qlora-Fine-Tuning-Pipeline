@@ -57,12 +57,34 @@ export function triggerMerge(payload) {
   }).then(handleResponse);
 }
 
-export function generateText(payload) {
-  return fetch(`${API_BASE_URL}/generate`, {
+export function publishMergedModel(payload) {
+  return fetch(`${API_BASE_URL}/publish/hub`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   }).then(handleResponse);
+}
+
+export async function generateText(payload, options = {}) {
+  const { retries = 1, backoffMs = 600 } = options;
+  let attempt = 0;
+
+  while (true) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      return await handleResponse(response);
+    } catch (err) {
+      attempt += 1;
+      if (attempt > retries) {
+        throw err;
+      }
+      await new Promise(resolve => setTimeout(resolve, backoffMs * attempt));
+    }
+  }
 }
 
 export function listJobs() {
@@ -75,6 +97,34 @@ export function getJob(jobId) {
 
 export function listAdapters() {
   return fetch(`${API_BASE_URL}/adapters`).then(handleResponse);
+}
+
+export function getStorageCatalog() {
+  return fetch(`${API_BASE_URL}/storage/catalog`).then(handleResponse);
+}
+
+export function getEvaluationResults(path) {
+  const url = new URL(`${API_BASE_URL}/evaluation/results`);
+  if (path && path.trim()) {
+    url.searchParams.set('path', path.trim());
+  }
+  return fetch(url).then(handleResponse);
+}
+
+export function deleteAdapter(path, removeFiles = false) {
+  return fetch(`${API_BASE_URL}/adapters`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path, remove_files: removeFiles })
+  }).then(handleResponse);
+}
+
+export function getJobLogs(jobId, since = 0) {
+  const url = new URL(`${API_BASE_URL}/jobs/${jobId}/logs`);
+  if (since > 0) {
+    url.searchParams.set('since', String(since));
+  }
+  return fetch(url).then(handleResponse);
 }
 
 export { API_BASE_URL };

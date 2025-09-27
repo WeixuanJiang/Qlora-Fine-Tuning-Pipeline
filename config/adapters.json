@@ -1,41 +1,4 @@
 {
     "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
-    "adapters": [
-        {
-            "name": "physics_qa",
-            "path": "model_output/run_2024-26-11_0314",
-            "description": "First Physics Q&A fine-tuning",
-            "training_date": "2024-11-26"
-        },
-        {
-            "name": "physics_qa",
-            "path": "model_output/run_2024-26-11_0444",
-            "description": "Second Physics Q&A fine-tuning",
-            "training_date": "2024-11-26"
-        },
-        {
-            "name": "physics_qa",
-            "path": "models/run_2025-09-21_2026",
-            "description": "LoRA run saved at run_2025-09-21_2026",
-            "training_date": "2025-09-21"
-        },
-        {
-            "name": "physics_qa",
-            "path": "models/run_2025-09-21_2033",
-            "description": "LoRA run saved at run_2025-09-21_2033",
-            "training_date": "2025-09-21"
-        },
-        {
-            "name": "physics_qa",
-            "path": "models/run_2025-09-21_2036",
-            "description": "LoRA run saved at run_2025-09-21_2036",
-            "training_date": "2025-09-21"
-        },
-        {
-            "name": "physics_qa",
-            "path": "models/run_2025-09-21_2038",
-            "description": "LoRA run saved at run_2025-09-21_2038",
-            "training_date": "2025-09-21"
-        }
-    ]
+    "adapters": []
 }

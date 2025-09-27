@@ -1,14 +1,22 @@
 import asyncio
+import io
 import json
+import os
+import re
+import shutil
 import threading
+import time
 import uuid
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Sequence
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from huggingface_hub import HfApi
+from huggingface_hub.utils import HfHubHTTPError
 
 # Ensure project root on path
 import sys
@@ -32,11 +40,186 @@ app.add_middleware(
 )
 
 
+@app.get("/health")
+def health_check() -> Dict[str, Any]:
+    return {"status": "ok"}
+
+
+MAX_LOG_LINES = 2000
+
+WINDOWS_DRIVE_PATTERN = re.compile(r'^([a-zA-Z]):[\\/](.*)$')
+
+
+def normalize_path_string(path: Optional[str]) -> Optional[str]:
+    if path is None:
+        return None
+    raw = path.strip()
+    if not raw:
+        return raw
+    match = WINDOWS_DRIVE_PATTERN.match(raw)
+    if match:
+        drive = match.group(1).lower()
+        rest = match.group(2).replace('\\', '/').lstrip('/')
+        return f"/mnt/{drive}/{rest}"
+    return raw.replace('\\', '/')
+
+
+def resolve_storage_path(path: str) -> Path:
+    normalized = normalize_path_string(path) or path
+    candidate = Path(normalized)
+    if not candidate.is_absolute():
+        candidate = (PROJECT_ROOT / candidate).resolve()
+    return candidate
+
+
+def load_adapter_registry() -> List[Dict[str, Any]]:
+    """Return adapter entries from config/adapters.json."""
+    config_path = PROJECT_ROOT / "config" / "adapters.json"
+    if not config_path.exists():
+        return []
+
+    try:
+        with config_path.open("r", encoding="utf-8") as config_file:
+            data = json.load(config_file)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to parse adapters.json: {exc}") from exc
+
+    adapters = data.get("adapters", [])
+    if not isinstance(adapters, list):
+        return []
+    return adapters
+
+
+def _relative_path(path: Path) -> str:
+    try:
+        relative = path.relative_to(PROJECT_ROOT)
+    except ValueError:
+        relative = path
+    return str(relative).replace("\\", "/")
+
+
+def _collect_file_entries(root: Path, patterns: Sequence[str]) -> List[Dict[str, str]]:
+    entries: Dict[str, Dict[str, str]] = {}
+    if not root.exists():
+        return []
+
+    for pattern in patterns:
+        for file_path in root.rglob(pattern):
+            if not file_path.is_file():
+                continue
+            rel = _relative_path(file_path)
+            entries[rel] = {"path": rel, "label": rel}
+
+    return [entries[key] for key in sorted(entries.keys())]
+
+
+def _catalog_entry(path_value: str, *, label: Optional[str] = None) -> Optional[Dict[str, str]]:
+    if not path_value:
+        return None
+
+    normalized = normalize_path_string(path_value) or path_value
+    candidate = Path(normalized)
+    if candidate.is_absolute():
+        cleaned = _relative_path(candidate)
+    else:
+        cleaned = normalized.replace("\\", "/")
+
+    display = label or cleaned
+    return {"path": cleaned, "label": display}
+
+
+def _collect_model_catalog() -> List[Dict[str, str]]:
+    entries: Dict[str, Dict[str, str]] = {}
+
+    default_entry = _catalog_entry("./merged_model")
+    if default_entry:
+        entries[default_entry["path"]] = default_entry
+
+    merged_root = PROJECT_ROOT / "merged_model"
+    if merged_root.exists() and merged_root.is_dir():
+        for child in sorted(merged_root.iterdir()):
+            if not child.is_dir():
+                continue
+            rel = _relative_path(child)
+            entries[rel] = {"path": rel, "label": rel}
+
+    for adapter in load_adapter_registry():
+        raw_path = adapter.get("path")
+        entry = _catalog_entry(raw_path or "")
+        if not entry:
+            continue
+        adapter_name = adapter.get("name")
+        training_date = adapter.get("training_date")
+        if adapter_name:
+            label_parts = [adapter_name]
+            if training_date:
+                label_parts.append(f"({training_date})")
+            label_parts.append(entry["path"])
+            entry["label"] = " ".join(label_parts)
+        entries[entry["path"]] = entry
+
+    return [entries[key] for key in sorted(entries.keys())]
+
+
+def _collect_adapter_catalog() -> List[Dict[str, str]]:
+    entries: Dict[str, Dict[str, str]] = {}
+
+    for adapter in load_adapter_registry():
+        raw_path = adapter.get("path")
+        entry = _catalog_entry(raw_path or "")
+        if not entry:
+            continue
+        adapter_name = adapter.get("name")
+        training_date = adapter.get("training_date")
+        if adapter_name:
+            label_parts = [adapter_name]
+            if training_date:
+                label_parts.append(f"({training_date})")
+            label_parts.append(entry["path"])
+            entry["label"] = " ".join(label_parts)
+        entries[entry["path"]] = entry
+
+    output_root = PROJECT_ROOT / "output"
+    if output_root.exists() and output_root.is_dir():
+        for child in sorted(output_root.iterdir()):
+            if not child.is_dir():
+                continue
+            rel = _relative_path(child)
+            entries.setdefault(rel, {"path": rel, "label": rel})
+
+    return [entries[key] for key in sorted(entries.keys())]
+
+
+def _collect_prediction_catalog() -> List[Dict[str, str]]:
+    predictions_root = PROJECT_ROOT / "predictions"
+    return _collect_file_entries(predictions_root, ("*.json", "*.jsonl"))
+
+
+def _collect_reference_catalog() -> List[Dict[str, str]]:
+    references_root = PROJECT_ROOT / "data"
+    return _collect_file_entries(references_root, ("*.json", "*.jsonl"))
+
+
+def _collect_evaluation_results_catalog() -> List[Dict[str, str]]:
+    evaluation_root = PROJECT_ROOT / "evaluation"
+    all_entries = _collect_file_entries(evaluation_root, ("*.json",))
+    filtered = []
+    for entry in all_entries:
+        path = entry["path"]
+        if path.endswith("evaluation_results.json") or path.endswith("latest_evaluation.json"):
+            filtered.append(entry)
+    return filtered
+
+
 class JobStatus(BaseModel):
     id: str
     status: str
+    kind: Optional[str] = None
+    summary: Optional[str] = None
+    metadata: Dict[str, Any] = Field(default_factory=dict)
     result: Optional[Any] = None
     error: Optional[str] = None
+    created_at: float = Field(default_factory=time.time)
 
 
 class JobsRegistry:
@@ -44,19 +227,50 @@ class JobsRegistry:
         self._jobs: Dict[str, JobStatus] = {}
         self._lock = threading.Lock()
 
-    def create_job(self) -> str:
+    def create_job(
+        self,
+        *,
+        kind: Optional[str] = None,
+        summary: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> str:
         job_id = str(uuid.uuid4())
         with self._lock:
-            self._jobs[job_id] = JobStatus(id=job_id, status="pending")
+            self._jobs[job_id] = JobStatus(
+                id=job_id,
+                status="pending",
+                kind=kind,
+                summary=summary,
+                metadata=metadata or {},
+            )
+        with job_logs_lock:
+            job_logs[job_id] = []
+            job_log_base[job_id] = 0
         return job_id
 
-    def set_status(self, job_id: str, status: str, *, result: Any = None, error: Optional[str] = None) -> None:
+    def set_status(
+        self,
+        job_id: str,
+        status: str,
+        *,
+        result: Any = None,
+        error: Optional[str] = None,
+        summary: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> None:
         with self._lock:
             job = self._jobs.get(job_id)
             if not job:
                 job = JobStatus(id=job_id, status=status)
             job.status = status
-            job.result = result
+            if summary is not None:
+                job.summary = summary
+            if metadata is not None:
+                job.metadata = metadata
+            if result is not None:
+                job.result = result
+            elif status in {"pending", "running"}:
+                job.result = None
             job.error = error
             self._jobs[job_id] = job
 
@@ -75,13 +289,69 @@ class JobsRegistry:
 jobs_registry = JobsRegistry()
 
 
+job_logs: Dict[str, List[str]] = {}
+job_log_base: Dict[str, int] = {}
+job_logs_lock = threading.Lock()
+
+
+def _append_job_log(job_id: str, message: str) -> None:
+    line = message.rstrip("\n")
+    if not line:
+        return
+    with job_logs_lock:
+        buffer = job_logs.setdefault(job_id, [])
+        buffer.append(line)
+        base = job_log_base.get(job_id, 0)
+        if len(buffer) > MAX_LOG_LINES:
+            drop = len(buffer) - MAX_LOG_LINES
+            del buffer[:drop]
+            job_log_base[job_id] = base + drop
+
+
+class JobLogWriter(io.TextIOBase):
+    def __init__(self, job_id: str) -> None:
+        super().__init__()
+        self.job_id = job_id
+        self._buffer = ""
+
+    def writable(self) -> bool:
+        return True
+
+    def write(self, message: str) -> int:  # type: ignore[override]
+        if not isinstance(message, str):
+            message = str(message)
+        if not message:
+            return 0
+        data = self._buffer + message
+        lines = data.splitlines(keepends=True)
+        self._buffer = ""
+        for chunk in lines:
+            if chunk.endswith("\n"):
+                _append_job_log(self.job_id, chunk[:-1])
+            else:
+                self._buffer = chunk
+        return len(message)
+
+    def flush(self) -> None:  # type: ignore[override]
+        if self._buffer:
+            _append_job_log(self.job_id, self._buffer)
+            self._buffer = ""
+
+
 def run_in_background(job_id: str, func, *args, **kwargs) -> None:
     def _target():
         jobs_registry.set_status(job_id, "running")
+        job_log_writer = JobLogWriter(job_id)
+        _append_job_log(job_id, "Job started")
         try:
-            result = func(*args, **kwargs)
+            with redirect_stdout(job_log_writer), redirect_stderr(job_log_writer):
+                result = func(*args, **kwargs)
+            job_log_writer.flush()
             jobs_registry.set_status(job_id, "completed", result=result)
+            _append_job_log(job_id, "Job completed")
         except Exception as exc:  # pylint: disable=broad-except
+            job_log_writer.flush()
+            _append_job_log(job_id, f"Job failed: {exc}")
             jobs_registry.set_status(job_id, "failed", error=str(exc))
 
     thread = threading.Thread(target=_target, daemon=True)
@@ -95,7 +365,7 @@ TRAIN_PARAM_SPECS: List[Dict[str, Any]] = [
         "name": "model_name",
         "label": "Base Model",
         "type": "string",
-        "default": "Qwen/Qwen-0.5B",
+        "default": "Qwen/Qwen2.5-0.5B-Instruct",
         "category": "General",
         "help": "Model identifier or local path",
     },
@@ -555,6 +825,7 @@ class EvaluateRequest(BaseModel):
     reference_file: str
     output_file: Optional[str] = None
     model: Optional[str] = None
+    openai_api_key: Optional[str] = None
 
 
 class MergeRequest(BaseModel):
@@ -563,6 +834,20 @@ class MergeRequest(BaseModel):
     output_dir: str
     device: str = Field(default="auto")
     trust_remote_code: bool = Field(default=True)
+
+
+class PublishToHubRequest(BaseModel):
+    source_dir: str
+    repo_id: str
+    token: str | None = None
+    private: bool = Field(default=False)
+    commit_message: str | None = Field(default="Upload merged model")
+    repo_type: str = Field(default="model")
+
+
+class AdapterDeleteRequest(BaseModel):
+    path: str
+    remove_files: bool = Field(default=False)
 
 
 @app.get("/train/parameters")
@@ -574,6 +859,11 @@ def get_train_parameters() -> Dict[str, Any]:
 def trigger_training(request: TrainRequest) -> Dict[str, Any]:
     param_values = {spec["name"]: spec["default"] for spec in TRAIN_PARAM_SPECS}
     param_values.update(request.parameters)
+
+    path_keys = ["model_name", "dataset_path", "output_dir", "model_cache_dir", "resume_from_checkpoint", "adapter_config_path"]
+    for key in path_keys:
+        if param_values.get(key):
+            param_values[key] = normalize_path_string(str(param_values[key]))
 
     # Normalize certain fields
     if isinstance(param_values.get("lora_target_modules"), str) and param_values["lora_target_modules"]:
@@ -588,7 +878,21 @@ def trigger_training(request: TrainRequest) -> Dict[str, Any]:
         except json.JSONDecodeError as exc:
             raise HTTPException(status_code=400, detail=f"Invalid prompt_template JSON: {exc}")
 
-    job_id = jobs_registry.create_job()
+    model_name = param_values.get("model_name") or "model"
+    summary = f"Fine-tune {model_name}"
+    dataset_label = param_values.get("dataset_name") or param_values.get("dataset_path")
+    if dataset_label:
+        dataset_label = Path(str(dataset_label)).name
+        summary = f"{summary} on {dataset_label}"
+
+    metadata = {
+        "model_name": param_values.get("model_name"),
+        "dataset_path": param_values.get("dataset_path"),
+        "dataset_name": param_values.get("dataset_name"),
+        "output_dir": param_values.get("output_dir"),
+    }
+
+    job_id = jobs_registry.create_job(kind="train", summary=summary, metadata=metadata)
 
     def _run_training():
         run_training(**param_values)
@@ -600,8 +904,13 @@ def trigger_training(request: TrainRequest) -> Dict[str, Any]:
 @app.post("/generate")
 async def generate_text(request: GenerateRequest) -> Dict[str, Any]:
     def _generate() -> str:
+        try:
+            model_path = str(resolve_storage_path(request.model_path))
+        except Exception:
+            model_path = normalize_path_string(request.model_path) or request.model_path
+
         inference = ModelInference(
-            model_path=request.model_path,
+            model_path=model_path,
             device=request.device,
             max_length=request.max_new_tokens or 256,
             temperature=request.temperature,
@@ -622,15 +931,43 @@ async def generate_text(request: GenerateRequest) -> Dict[str, Any]:
 
 @app.post("/evaluate")
 def trigger_evaluation(request: EvaluateRequest) -> Dict[str, Any]:
-    job_id = jobs_registry.create_job()
+    pred_label = Path(str(request.predictions_file)).name
+    ref_label = Path(str(request.reference_file)).name
+    summary = f"Evaluate {pred_label} vs {ref_label}"
+    metadata = {
+        "predictions_file": request.predictions_file,
+        "reference_file": request.reference_file,
+        "output_file": request.output_file,
+        "model": request.model or EVAL_MODEL,
+    }
+    if request.openai_api_key:
+        metadata["uses_custom_openai_key"] = True
+
+    job_id = jobs_registry.create_job(kind="evaluate", summary=summary, metadata=metadata)
 
     def _evaluate():
+        token = (request.openai_api_key or "").strip()
+        previous_token = os.environ.get("OPENAI_API_KEY")
+        if token:
+            os.environ["OPENAI_API_KEY"] = token
         evaluator = ModelEvaluator(model_name=request.model or EVAL_MODEL)
-        return evaluator.evaluate_dataset(
-            predictions_file=request.predictions_file,
-            reference_file=request.reference_file,
-            output_file=request.output_file,
-        )
+        predictions_file = str(resolve_storage_path(request.predictions_file))
+        reference_file = str(resolve_storage_path(request.reference_file))
+        output_file = request.output_file
+        if output_file:
+            output_file = str(resolve_storage_path(output_file))
+        try:
+            return evaluator.evaluate_dataset(
+                predictions_file=predictions_file,
+                reference_file=reference_file,
+                output_file=output_file,
+            )
+        finally:
+            if token:
+                if previous_token is None:
+                    os.environ.pop("OPENAI_API_KEY", None)
+                else:
+                    os.environ["OPENAI_API_KEY"] = previous_token
 
     run_in_background(job_id, _evaluate)
     return {"job_id": job_id, "status": "queued"}
@@ -638,19 +975,107 @@ def trigger_evaluation(request: EvaluateRequest) -> Dict[str, Any]:
 
 @app.post("/merge")
 def trigger_merge(request: MergeRequest) -> Dict[str, Any]:
-    job_id = jobs_registry.create_job()
+    adapter_label = Path(str(request.adapter_path)).name
+    output_label = Path(str(request.output_dir)).name
+    summary = f"Merge {adapter_label} -> {output_label}"
+    metadata = {
+        "base_model_name": request.base_model_name,
+        "adapter_path": request.adapter_path,
+        "output_dir": request.output_dir,
+        "device": request.device,
+    }
+
+    job_id = jobs_registry.create_job(kind="merge", summary=summary, metadata=metadata)
 
     def _merge():
+        adapter_path = str(resolve_storage_path(request.adapter_path))
+        output_dir = str(resolve_storage_path(request.output_dir))
         return merge_multiple_loras(
             base_model_name=request.base_model_name,
-            adapter_paths=[request.adapter_path],
-            output_dir=request.output_dir,
+            adapter_paths=[adapter_path],
+            output_dir=output_dir,
             device=request.device,
             trust_remote_code=request.trust_remote_code,
         )
 
     run_in_background(job_id, _merge)
     return {"job_id": job_id, "status": "queued"}
+
+
+@app.post("/publish/hub")
+def publish_to_hub(request: PublishToHubRequest) -> Dict[str, Any]:
+    source_label = Path(str(request.source_dir)).name
+    summary = f"Upload {source_label} to {request.repo_id}"
+    metadata = {
+        "source_dir": request.source_dir,
+        "repo_id": request.repo_id,
+        "private": request.private,
+    }
+
+    job_id = jobs_registry.create_job(kind="publish", summary=summary, metadata=metadata)
+
+    def _publish():
+        source_path = resolve_storage_path(request.source_dir)
+        if not source_path.exists() or not source_path.is_dir():
+            raise ValueError(f"Source directory does not exist: {source_path}")
+
+        repo_id = request.repo_id.strip()
+        if not repo_id:
+            raise ValueError("A Hugging Face repo ID is required")
+
+        token = (request.token or "").strip() or os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACEHUB_API_TOKEN")
+
+        print(f"Preparing upload of '{source_path}' to Hugging Face repo '{repo_id}'")
+        if request.private:
+            print("Target repository will be private")
+
+        if token:
+            print("Using provided Hugging Face access token")
+        else:
+            print("No Hugging Face token provided; attempting upload with existing credentials")
+
+        api = HfApi(token=token)
+
+        try:
+            api.create_repo(repo_id=repo_id, repo_type=request.repo_type, private=request.private, exist_ok=True)
+            print("Repository ready; starting upload...")
+            api.upload_folder(
+                folder_path=str(source_path),
+                repo_id=repo_id,
+                repo_type=request.repo_type,
+                commit_message=request.commit_message or "Upload merged model",
+            )
+            print("Upload completed successfully")
+        except HfHubHTTPError as exc:
+            raise RuntimeError(f"Hugging Face Hub error: {exc}") from exc
+
+        return {"repo_id": repo_id}
+
+    run_in_background(job_id, _publish)
+    return {"job_id": job_id, "status": "queued"}
+
+
+@app.get("/evaluation/results")
+def fetch_evaluation_results(path: Optional[str] = Query(default=None)) -> Dict[str, Any]:
+    if path:
+        target_path = resolve_storage_path(path)
+    else:
+        target_path = PROJECT_ROOT / "evaluation" / "latest_evaluation.json"
+        if not target_path.exists():
+            raise HTTPException(status_code=404, detail="No evaluation results found")
+
+    if not target_path.exists():
+        raise HTTPException(status_code=404, detail=f"Evaluation file not found: {target_path}")
+
+    try:
+        with target_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid evaluation JSON: {exc}") from exc
+
+    metadata = data.setdefault("metadata", {})
+    metadata["source_path"] = str(target_path)
+    return data
 
 
 @app.get("/jobs")
@@ -662,22 +1087,99 @@ def list_jobs() -> Dict[str, Any]:
 def get_job(job_id: str) -> JobStatus:
     try:
         return jobs_registry.get_job(job_id)
-    except KeyError:
-        raise HTTPException(status_code=404, detail="Job not found")
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Job not found") from exc
+
+
+@app.get("/jobs/{job_id}/logs")
+def get_job_logs(job_id: str, since: int = Query(0, ge=0)) -> Dict[str, Any]:
+    try:
+        jobs_registry.get_job(job_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Job not found") from exc
+
+    with job_logs_lock:
+        base = job_log_base.get(job_id, 0)
+        buffer = job_logs.get(job_id, [])
+        total = base + len(buffer)
+
+        if since < base:
+            start_idx = 0
+            reset = True
+        else:
+            start_idx = since - base
+            if start_idx < 0:
+                start_idx = 0
+            reset = False
+
+        new_lines = buffer[start_idx:]
+        next_offset = base + len(buffer)
+
+    return {
+        "logs": new_lines,
+        "next_offset": next_offset,
+        "reset": reset,
+        "total": total,
+    }
 
 
 @app.get("/adapters")
 def list_adapters() -> Dict[str, Any]:
+    adapters = load_adapter_registry()
+    return {"adapters": adapters}
+
+
+@app.get("/storage/catalog")
+def list_storage_catalog() -> Dict[str, Any]:
+    return {
+        "models": _collect_model_catalog(),
+        "merge": _collect_adapter_catalog(),
+        "predictions": _collect_prediction_catalog(),
+        "references": _collect_reference_catalog(),
+        "evaluation_results": _collect_evaluation_results_catalog(),
+    }
+
+
+@app.delete("/adapters")
+def delete_adapter(request: AdapterDeleteRequest) -> Dict[str, Any]:
     config_path = PROJECT_ROOT / "config" / "adapters.json"
     if not config_path.exists():
-        return {"adapters": []}
+        raise HTTPException(status_code=404, detail="No adapter registry found")
+
     try:
         with config_path.open("r", encoding="utf-8") as f:
             data = json.load(f)
-        adapters = data.get("adapters", [])
-        return {"adapters": adapters}
     except json.JSONDecodeError as exc:
-        raise HTTPException(status_code=500, detail=f"Failed to parse adapters.json: {exc}")
+        raise HTTPException(status_code=500, detail=f"Failed to parse adapters.json: {exc}") from exc
+
+    normalized_path = normalize_path_string(request.path) or request.path
+    adapters = data.get("adapters", [])
+    target = next((adapter for adapter in adapters if adapter.get("path") == normalized_path), None)
+    if not target:
+        raise HTTPException(status_code=404, detail="Adapter not found")
+
+    data["adapters"] = [adapter for adapter in adapters if adapter.get("path") != normalized_path]
+
+    with config_path.open("w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
+
+    removed_files = False
+    if request.remove_files:
+        adapter_path = resolve_storage_path(normalized_path)
+
+        try:
+            adapter_path.relative_to(PROJECT_ROOT)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Adapter path must reside within project directory") from exc
+
+        if adapter_path.exists():
+            removed_files = True
+            if adapter_path.is_dir():
+                shutil.rmtree(adapter_path)
+            else:
+                adapter_path.unlink()
+
+    return {"removed": target, "removed_files": removed_files}
 @app.post("/datasets/upload")
 async def upload_dataset(
     file: UploadFile = File(...),

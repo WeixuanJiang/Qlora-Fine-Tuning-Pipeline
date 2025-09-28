@@ -1,11 +1,15 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
+# Install build dependencies for native modules
+RUN apk add --no-cache python3 make g++ libc6-compat
+
 ARG VITE_API_URL=http://localhost:8000
 ENV VITE_API_URL=$VITE_API_URL
 
 COPY package.json package-lock.json* .
-RUN npm install
+# Use npm ci for faster, reliable, reproducible builds and add flags for compatibility
+RUN npm ci --legacy-peer-deps --no-audit --no-fund
 
 COPY . .
 RUN npm run build

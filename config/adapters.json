@@ -1,4 +1,11 @@
 {
     "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
-    "adapters": []
+    "adapters": [
+        {
+            "name": "data-physics-qa-json-20250928_201917",
+            "path": "output/data-physics-qa-json-20250928_201917",
+            "description": "Run data-physics-qa-json-20250928_201917 saved at data-physics-qa-json-20250928_201917",
+            "training_date": "2025-09-28"
+        }
+    ]
 }

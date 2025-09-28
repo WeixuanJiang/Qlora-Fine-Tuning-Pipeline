@@ -41,13 +41,13 @@ import {
   AlertIcon,
 } from '@chakra-ui/react';
 import {
-  FiPlay,
-  FiCopy,
-  FiDownload,
-  FiSettings,
-  FiZap,
-  FiType,
-} from 'react-icons/fi';
+  PlayIcon,
+  CopyIcon,
+  DownloadIcon,
+  SettingsIcon,
+  ZapIcon,
+  TypeIcon,
+} from '@/components/icons/GeometricIcons';
 import { motion } from 'framer-motion';
 import { useModelStore } from '@/stores/modelStore';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -237,7 +237,7 @@ This is a mock response for demonstration purposes. In a real implementation, th
           >
             <CardHeader>
               <HStack spacing={3}>
-                <Icon as={FiType} color="primary.500" boxSize={5} />
+                <Icon as={TypeIcon} color="primary.500" boxSize={5} />
                 <Heading size="md">Input Prompt</Heading>
               </HStack>
             </CardHeader>
@@ -319,7 +319,7 @@ This is a mock response for demonstration purposes. In a real implementation, th
               <AccordionItem border="none">
                 <AccordionButton p={6}>
                   <HStack flex={1} spacing={3}>
-                    <Icon as={FiSettings} color="primary.500" boxSize={5} />
+                    <Icon as={SettingsIcon} color="primary.500" boxSize={5} />
                     <Heading size="md">Generation Parameters</Heading>
                   </HStack>
                   <AccordionIcon />
@@ -483,7 +483,7 @@ This is a mock response for demonstration purposes. In a real implementation, th
                 <Button
                   size="lg"
                   colorScheme="primary"
-                  leftIcon={isGenerating ? <LoadingSpinner size="sm" /> : <FiPlay />}
+                  leftIcon={isGenerating ? <LoadingSpinner size="sm" /> : <PlayIcon />}
                   onClick={handleGenerate}
                   isLoading={isGenerating}
                   loadingText="Generating..."
@@ -498,7 +498,7 @@ This is a mock response for demonstration purposes. In a real implementation, th
                     <Button
                       size="sm"
                       variant="outline"
-                      leftIcon={<FiCopy />}
+                      leftIcon={<CopyIcon />}
                       onClick={() => copyToClipboard(generatedText)}
                       flex={1}
                     >
@@ -507,7 +507,7 @@ This is a mock response for demonstration purposes. In a real implementation, th
                     <Button
                       size="sm"
                       variant="outline"
-                      leftIcon={<FiDownload />}
+                      leftIcon={<DownloadIcon />}
                       onClick={() => {
                         const blob = new Blob([generatedText], { type: 'text/plain' });
                         const url = URL.createObjectURL(blob);
@@ -541,7 +541,7 @@ This is a mock response for demonstration purposes. In a real implementation, th
             <CardHeader>
               <HStack justify="space-between">
                 <HStack spacing={3}>
-                  <Icon as={FiZap} color="primary.500" boxSize={5} />
+                  <Icon as={ZapIcon} color="primary.500" boxSize={5} />
                   <Heading size="md">Generated Output</Heading>
                 </HStack>
                 {generatedText && (

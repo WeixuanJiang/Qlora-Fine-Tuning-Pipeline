@@ -62,21 +62,21 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import {
-  FiGitMerge,
-  FiPlay,
-  FiDownload,
-  FiTrash2,
-  FiEye,
-  FiSettings,
-  FiInfo,
-  FiCheckCircle,
-  FiXCircle,
-  FiClock,
-  FiLayers,
-  FiCpu,
-  FiHardDrive,
-  FiRefreshCw,
-} from 'react-icons/fi';
+  MergeIcon,
+  PlayIcon,
+  DownloadIcon,
+  TrashIcon,
+  EyeIcon,
+  SettingsIcon,
+  InfoIcon,
+  CheckIcon,
+  XIcon,
+  ClockIcon,
+  LayersIcon,
+  CpuIcon,
+  HardDriveIcon,
+  RefreshIcon,
+} from '@/components/icons/GeometricIcons';
 import { motion } from 'framer-motion';
 import { useModelStore } from '@/stores/modelStore';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -246,11 +246,11 @@ const MergePage: React.FC = () => {
   
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'running': return FiClock;
-      case 'completed': return FiCheckCircle;
-      case 'failed': return FiXCircle;
-      case 'pending': return FiClock;
-      default: return FiClock;
+      case 'running': return ClockIcon;
+      case 'completed': return CheckIcon;
+      case 'failed': return XIcon;
+      case 'pending': return ClockIcon;
+      default: return ClockIcon;
     }
   };
   
@@ -310,7 +310,7 @@ const MergePage: React.FC = () => {
                 <VStack spacing={2} align="stretch">
                   {job.adapters.map((adapter, index) => (
                     <HStack key={index} p={3} bg={useColorModeValue('gray.50', 'gray.700')} borderRadius="md">
-                      <Icon as={FiLayers} color="primary.500" />
+                      <Icon as={LayersIcon} color="primary.500" />
                       <Text>{adapter}</Text>
                     </HStack>
                   ))}
@@ -390,7 +390,7 @@ const MergePage: React.FC = () => {
               >
                 <CardHeader>
                   <HStack spacing={3}>
-                    <Icon as={FiGitMerge} color="primary.500" />
+                    <Icon as={MergeIcon} color="primary.500" />
                     <Heading size="md">Merge Configuration</Heading>
                   </HStack>
                 </CardHeader>
@@ -581,7 +581,7 @@ const MergePage: React.FC = () => {
                     
                     <Flex justify="flex-end">
                       <Button
-                        leftIcon={<FiGitMerge />}
+                        leftIcon={<MergeIcon />}
                         colorScheme="primary"
                         size="lg"
                         onClick={handleStartMerge}
@@ -617,7 +617,7 @@ const MergePage: React.FC = () => {
                       <StatLabel>Total Merges</StatLabel>
                       <StatNumber>{mergeJobs.length}</StatNumber>
                       <StatHelpText>
-                        <Icon as={FiGitMerge} mr={1} />
+                        <Icon as={MergeIcon} mr={1} />
                         All time
                       </StatHelpText>
                     </Stat>
@@ -640,7 +640,7 @@ const MergePage: React.FC = () => {
                         {mergeJobs.filter(j => j.status === 'running').length}
                       </StatNumber>
                       <StatHelpText>
-                        <Icon as={FiClock} mr={1} />
+                        <Icon as={ClockIcon} mr={1} />
                         In progress
                       </StatHelpText>
                     </Stat>
@@ -663,7 +663,7 @@ const MergePage: React.FC = () => {
                         {mergeJobs.filter(j => j.status === 'completed').length}
                       </StatNumber>
                       <StatHelpText>
-                        <Icon as={FiCheckCircle} mr={1} />
+                        <Icon as={CheckIcon} mr={1} />
                         Successful
                       </StatHelpText>
                     </Stat>
@@ -747,7 +747,7 @@ const MergePage: React.FC = () => {
                                 <HStack spacing={1}>
                                   <Tooltip label="View Details">
                                     <IconButton
-                                      icon={<FiEye />}
+                                      icon={<EyeIcon />}
                                       size="sm"
                                       variant="ghost"
                                       onClick={() => {
@@ -759,7 +759,7 @@ const MergePage: React.FC = () => {
                                   {job.status === 'completed' && (
                                     <Tooltip label="Download Model">
                                       <IconButton
-                                        icon={<FiDownload />}
+                                        icon={<DownloadIcon />}
                                         size="sm"
                                         variant="ghost"
                                       />
@@ -767,7 +767,7 @@ const MergePage: React.FC = () => {
                                   )}
                                   <Tooltip label="Delete">
                                     <IconButton
-                                      icon={<FiTrash2 />}
+                                      icon={<TrashIcon />}
                                       size="sm"
                                       variant="ghost"
                                       colorScheme="red"
@@ -784,7 +784,7 @@ const MergePage: React.FC = () => {
                   
                   {mergeJobs.length === 0 && (
                     <Box p={8} textAlign="center">
-                      <Icon as={FiGitMerge} boxSize={12} color="gray.400" mb={4} />
+                      <Icon as={MergeIcon} boxSize={12} color="gray.400" mb={4} />
                       <Text fontSize="lg" fontWeight="medium" color="gray.500" mb={2}>
                         No merge jobs yet
                       </Text>

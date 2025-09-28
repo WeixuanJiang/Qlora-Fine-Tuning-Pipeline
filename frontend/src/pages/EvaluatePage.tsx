@@ -57,21 +57,21 @@ import {
   SliderMark,
 } from '@chakra-ui/react';
 import {
-  FiPlay,
-  FiDownload,
-  FiRefreshCw,
-  FiBarChart3,
-  FiTarget,
-  FiTrendingUp,
-  FiCheckCircle,
-  FiXCircle,
-  FiClock,
-  FiFileText,
-  FiSettings,
-  FiInfo,
-  FiCopy,
-  FiEye,
-} from 'react-icons/fi';
+  PlayIcon,
+  DownloadIcon,
+  RefreshIcon,
+  ChartIcon,
+  TargetIcon,
+  TrendingUpIcon,
+  CheckIcon,
+  XIcon,
+  ClockIcon,
+  FileTextIcon,
+  SettingsIcon,
+  InfoIcon,
+  CopyIcon,
+  EyeIcon,
+} from '@/components/icons/GeometricIcons';
 import { motion } from 'framer-motion';
 import { useModelStore } from '@/stores/modelStore';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -243,10 +243,10 @@ const EvaluatePage: React.FC = () => {
   
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'running': return FiClock;
-      case 'completed': return FiCheckCircle;
-      case 'failed': return FiXCircle;
-      default: return FiClock;
+      case 'running': return ClockIcon;
+      case 'completed': return CheckIcon;
+      case 'failed': return XIcon;
+      default: return ClockIcon;
     }
   };
   
@@ -303,7 +303,7 @@ const EvaluatePage: React.FC = () => {
               >
                 <CardHeader>
                   <HStack spacing={3}>
-                    <Icon as={FiSettings} color="primary.500" />
+                    <Icon as={SettingsIcon} color="primary.500" />
                     <Heading size="md">Evaluation Configuration</Heading>
                   </HStack>
                 </CardHeader>
@@ -464,7 +464,7 @@ const EvaluatePage: React.FC = () => {
                   
                   <Flex mt={8} justify="flex-end">
                     <Button
-                      leftIcon={<FiPlay />}
+                      leftIcon={<PlayIcon />}
                       colorScheme="primary"
                       size="lg"
                       onClick={handleStartEvaluation}
@@ -498,7 +498,7 @@ const EvaluatePage: React.FC = () => {
                       <StatLabel>Total Evaluations</StatLabel>
                       <StatNumber>{evaluationResults.length}</StatNumber>
                       <StatHelpText>
-                        <Icon as={FiBarChart3} mr={1} />
+                        <Icon as={ChartIcon} mr={1} />
                         All time
                       </StatHelpText>
                     </Stat>
@@ -521,7 +521,7 @@ const EvaluatePage: React.FC = () => {
                         {evaluationResults.filter(r => r.status === 'running').length}
                       </StatNumber>
                       <StatHelpText>
-                        <Icon as={FiClock} mr={1} />
+                        <Icon as={ClockIcon} mr={1} />
                         In progress
                       </StatHelpText>
                     </Stat>
@@ -544,7 +544,7 @@ const EvaluatePage: React.FC = () => {
                         {evaluationResults.filter(r => r.status === 'completed').length}
                       </StatNumber>
                       <StatHelpText>
-                        <Icon as={FiCheckCircle} mr={1} />
+                        <Icon as={CheckIcon} mr={1} />
                         Finished
                       </StatHelpText>
                     </Stat>
@@ -636,7 +636,7 @@ const EvaluatePage: React.FC = () => {
                                 <HStack spacing={1}>
                                   <Tooltip label="View Details">
                                     <IconButton
-                                      icon={<FiEye />}
+                                      icon={<EyeIcon />}
                                       size="sm"
                                       variant="ghost"
                                       onClick={() => setSelectedResult(result)}
@@ -644,7 +644,7 @@ const EvaluatePage: React.FC = () => {
                                   </Tooltip>
                                   <Tooltip label="Download Report">
                                     <IconButton
-                                      icon={<FiDownload />}
+                                      icon={<DownloadIcon />}
                                       size="sm"
                                       variant="ghost"
                                     />
@@ -660,7 +660,7 @@ const EvaluatePage: React.FC = () => {
                   
                   {evaluationResults.length === 0 && (
                     <Box p={8} textAlign="center">
-                      <Icon as={FiTarget} boxSize={12} color="gray.400" mb={4} />
+                      <Icon as={TargetIcon} boxSize={12} color="gray.400" mb={4} />
                       <Text fontSize="lg" fontWeight="medium" color="gray.500" mb={2}>
                         No evaluations yet
                       </Text>
@@ -687,7 +687,7 @@ const EvaluatePage: React.FC = () => {
                   <CardHeader>
                     <HStack justify="space-between">
                       <HStack spacing={3}>
-                        <Icon as={FiFileText} color="primary.500" />
+                        <Icon as={FileTextIcon} color="primary.500" />
                         <Heading size="md">{selectedResult.name} - Detailed Results</Heading>
                       </HStack>
                       <Button size="sm" variant="ghost" onClick={() => setSelectedResult(null)}>
@@ -737,11 +737,11 @@ const EvaluatePage: React.FC = () => {
                                       Input
                                     </Text>
                                     <IconButton
-                                      icon={<FiCopy />}
-                                      size="xs"
-                                      variant="ghost"
-                                      onClick={() => copyToClipboard(sample.input)}
-                                    />
+                                        icon={<CopyIcon />}
+                                        size="xs"
+                                        variant="ghost"
+                                        onClick={() => copyToClipboard(sample.input)}
+                                      />
                                   </HStack>
                                   <Code p={2} w="full" fontSize="sm">
                                     {sample.input}
@@ -754,11 +754,11 @@ const EvaluatePage: React.FC = () => {
                                       Expected Output
                                     </Text>
                                     <IconButton
-                                      icon={<FiCopy />}
-                                      size="xs"
-                                      variant="ghost"
-                                      onClick={() => copyToClipboard(sample.expected)}
-                                    />
+                                        icon={<CopyIcon />}
+                                        size="xs"
+                                        variant="ghost"
+                                        onClick={() => copyToClipboard(sample.expected)}
+                                      />
                                   </HStack>
                                   <Code p={2} w="full" fontSize="sm">
                                     {sample.expected}
@@ -775,7 +775,7 @@ const EvaluatePage: React.FC = () => {
                                         Score: {(sample.score * 100).toFixed(1)}%
                                       </Badge>
                                       <IconButton
-                                        icon={<FiCopy />}
+                                        icon={<CopyIcon />}
                                         size="xs"
                                         variant="ghost"
                                         onClick={() => copyToClipboard(sample.generated)}
@@ -820,7 +820,7 @@ const EvaluatePage: React.FC = () => {
                 transition={{ duration: 0.3 }}
               >
                 <CardBody p={8} textAlign="center">
-                  <Icon as={FiTrendingUp} boxSize={12} color="gray.400" mb={4} />
+                  <Icon as={TrendingUpIcon} boxSize={12} color="gray.400" mb={4} />
                   <Text fontSize="lg" fontWeight="medium" color="gray.500" mb={2}>
                     Benchmark Comparisons Coming Soon
                   </Text>

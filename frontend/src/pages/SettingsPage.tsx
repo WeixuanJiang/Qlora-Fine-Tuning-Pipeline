@@ -74,35 +74,35 @@ import {
   AccordionIcon,
 } from '@chakra-ui/react';
 import {
-  FiSettings,
-  FiSave,
-  FiRefreshCw,
-  FiTrash2,
-  FiDownload,
-  FiUpload,
-  FiServer,
-  FiDatabase,
-  FiCpu,
-  FiHardDrive,
-  FiWifi,
-  FiShield,
-  FiUser,
-  FiMoon,
-  FiSun,
-  FiMonitor,
-  FiGlobe,
-  FiMail,
-  FiBell,
-  FiKey,
-  FiLock,
-  FiEye,
-  FiEyeOff,
-  FiInfo,
-  FiAlertTriangle,
-  FiCheckCircle,
-  FiFolder,
-  FiEdit3,
-} from 'react-icons/fi';
+  SettingsIcon,
+  SaveIcon,
+  RefreshIcon,
+  TrashIcon,
+  DownloadIcon,
+  UploadIcon,
+  ServerIcon,
+  DatabaseIcon,
+  CpuIcon,
+  HardDriveIcon,
+  WifiIcon,
+  ShieldIcon,
+  UserIcon,
+  MoonIcon,
+  SunIcon,
+  MonitorIcon,
+  GlobeIcon,
+  MailIcon,
+  BellIcon,
+  KeyIcon,
+  LockIcon,
+  EyeIcon,
+  EyeOffIcon,
+  InfoIcon,
+  AlertIcon,
+  CheckIcon,
+  FolderIcon,
+  EditIcon,
+} from '@/components/icons/GeometricIcons';
 import { motion } from 'framer-motion';
 import { useAppStore } from '@/stores/appStore';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -330,7 +330,7 @@ const SettingsPage: React.FC = () => {
         <ModalContent>
           <ModalHeader>
             <HStack spacing={3}>
-              <Icon as={FiAlertTriangle} color="red.500" />
+              <Icon as={AlertIcon} color="red.500" />
               <Text>Reset Data</Text>
             </HStack>
           </ModalHeader>
@@ -404,14 +404,14 @@ const SettingsPage: React.FC = () => {
         
         <HStack spacing={3}>
           <Button
-            leftIcon={<FiDownload />}
+            leftIcon={<DownloadIcon />}
             variant="outline"
             onClick={handleExportSettings}
           >
             Export
           </Button>
           <Button
-            leftIcon={<FiSave />}
+            leftIcon={<SaveIcon />}
             colorScheme="primary"
             onClick={handleSaveSettings}
             isLoading={isSaving}
@@ -447,7 +447,7 @@ const SettingsPage: React.FC = () => {
               >
                 <CardHeader>
                   <HStack spacing={3}>
-                    <Icon as={colorMode === 'light' ? FiSun : FiMoon} color="primary.500" />
+                    <Icon as={colorMode === 'light' ? SunIcon : MoonIcon} color="primary.500" />
                     <Heading size="md">Appearance</Heading>
                   </HStack>
                 </CardHeader>
@@ -462,19 +462,19 @@ const SettingsPage: React.FC = () => {
                         <Stack direction="row" spacing={6}>
                           <Radio value="light">
                             <HStack spacing={2}>
-                              <Icon as={FiSun} />
+                              <Icon as={SunIcon} />
                               <Text>Light</Text>
                             </HStack>
                           </Radio>
                           <Radio value="dark">
                             <HStack spacing={2}>
-                              <Icon as={FiMoon} />
+                              <Icon as={MoonIcon} />
                               <Text>Dark</Text>
                             </HStack>
                           </Radio>
                           <Radio value="system">
                             <HStack spacing={2}>
-                              <Icon as={FiMonitor} />
+                              <Icon as={MonitorIcon} />
                               <Text>System</Text>
                             </HStack>
                           </Radio>
@@ -528,7 +528,7 @@ const SettingsPage: React.FC = () => {
               >
                 <CardHeader>
                   <HStack spacing={3}>
-                    <Icon as={FiBell} color="primary.500" />
+                    <Icon as={BellIcon} color="primary.500" />
                     <Heading size="md">Notifications</Heading>
                   </HStack>
                 </CardHeader>
@@ -635,7 +635,7 @@ const SettingsPage: React.FC = () => {
               >
                 <CardHeader>
                   <HStack spacing={3}>
-                    <Icon as={FiSettings} color="primary.500" />
+                    <Icon as={SettingsIcon} color="primary.500" />
                     <Heading size="md">General Preferences</Heading>
                   </HStack>
                 </CardHeader>
@@ -716,7 +716,7 @@ const SettingsPage: React.FC = () => {
               >
                 <CardHeader>
                   <HStack spacing={3}>
-                    <Icon as={FiServer} color="primary.500" />
+                    <Icon as={ServerIcon} color="primary.500" />
                     <Heading size="md">API Configuration</Heading>
                   </HStack>
                 </CardHeader>
@@ -814,7 +814,7 @@ const SettingsPage: React.FC = () => {
               >
                 <CardHeader>
                   <HStack spacing={3}>
-                    <Icon as={FiShield} color="primary.500" />
+                    <Icon as={ShieldIcon} color="primary.500" />
                     <Heading size="md">Security</Heading>
                   </HStack>
                 </CardHeader>
@@ -830,7 +830,7 @@ const SettingsPage: React.FC = () => {
                           placeholder="Enter your API key"
                         />
                         <IconButton
-                          icon={showApiKey ? <FiEyeOff /> : <FiEye />}
+                          icon={showApiKey ? <EyeOffIcon /> : <EyeIcon />}
                           onClick={() => setShowApiKey(!showApiKey)}
                           variant="outline"
                         />
@@ -869,11 +869,11 @@ const SettingsPage: React.FC = () => {
                 <CardHeader>
                   <HStack spacing={3} justify="space-between">
                     <HStack spacing={3}>
-                      <Icon as={FiInfo} color="primary.500" />
+                      <Icon as={InfoIcon} color="primary.500" />
                       <Heading size="md">System Information</Heading>
                     </HStack>
                     <Button
-                      leftIcon={<FiRefreshCw />}
+                      leftIcon={<RefreshIcon />}
                       size="sm"
                       variant="outline"
                       onClick={loadSystemInfo}
@@ -969,7 +969,7 @@ const SettingsPage: React.FC = () => {
               >
                 <CardHeader>
                   <HStack spacing={3}>
-                    <Icon as={FiSettings} color="primary.500" />
+                    <Icon as={SettingsIcon} color="primary.500" />
                     <Heading size="md">Advanced Settings</Heading>
                   </HStack>
                 </CardHeader>
@@ -1085,7 +1085,7 @@ const SettingsPage: React.FC = () => {
               >
                 <CardHeader>
                   <HStack spacing={3}>
-                    <Icon as={FiAlertTriangle} color="red.500" />
+                    <Icon as={AlertIcon} color="red.500" />
                     <Heading size="md" color="red.500">Danger Zone</Heading>
                   </HStack>
                 </CardHeader>
@@ -1106,7 +1106,7 @@ const SettingsPage: React.FC = () => {
                       <Button
                         colorScheme="red"
                         variant="outline"
-                        leftIcon={<FiTrash2 />}
+                        leftIcon={<TrashIcon />}
                         onClick={onOpen}
                       >
                         Reset

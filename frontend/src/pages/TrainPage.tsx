@@ -46,15 +46,15 @@ import {
   SliderMark,
 } from '@chakra-ui/react';
 import {
-  FiPlay,
-  FiUpload,
-  FiSettings,
-  FiInfo,
-  FiAlertTriangle,
-  FiCpu,
-  FiDatabase,
-  FiZap,
-} from 'react-icons/fi';
+  PlayIcon,
+  UploadIcon,
+  SettingsIcon,
+  InfoIcon,
+  AlertIcon,
+  CpuIcon,
+  DatabaseIcon,
+  ZapIcon,
+} from '@/components/icons/GeometricIcons';
 import { motion } from 'framer-motion';
 import { useJobStore } from '@/stores/jobStore';
 import { useModelStore } from '@/stores/modelStore';
@@ -306,7 +306,7 @@ const TrainPage: React.FC = () => {
       <FormSection
         title="Basic Configuration"
         description="Essential settings for your training job"
-        icon={FiSettings}
+        icon={SettingsIcon}
       >
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
           <FormControl isRequired isInvalid={!!errors.jobName}>
@@ -374,7 +374,7 @@ const TrainPage: React.FC = () => {
       <FormSection
         title="Training Parameters"
         description="Core hyperparameters for the training process"
-        icon={FiZap}
+        icon={ZapIcon}
       >
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
           <FormControl isInvalid={!!errors.epochs}>
@@ -439,7 +439,7 @@ const TrainPage: React.FC = () => {
       <FormSection
         title="LoRA Configuration"
         description="Low-Rank Adaptation specific parameters"
-        icon={FiCpu}
+        icon={CpuIcon}
       >
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
           <FormControl>
@@ -518,7 +518,7 @@ const TrainPage: React.FC = () => {
       <FormSection
         title="Advanced Settings"
         description="Additional configuration options"
-        icon={FiDatabase}
+        icon={DatabaseIcon}
         defaultExpanded={false}
       >
         <VStack spacing={6} align="stretch">
@@ -654,7 +654,7 @@ const TrainPage: React.FC = () => {
               <Button
                 size="lg"
                 colorScheme="primary"
-                leftIcon={isSubmitting ? <LoadingSpinner size="sm" /> : <FiPlay />}
+                leftIcon={isSubmitting ? <LoadingSpinner size="sm" /> : <PlayIcon />}
                 onClick={handleSubmit}
                 isLoading={isSubmitting}
                 loadingText="Starting..."

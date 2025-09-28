@@ -10,25 +10,24 @@ import {
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
 import {
-  FiCheckCircle,
-  FiAlertCircle,
-  FiAlertTriangle,
-  FiInfo,
-} from 'react-icons/fi';
+  CheckIcon,
+  AlertIcon,
+  InfoIcon,
+} from '@/components/icons/GeometricIcons';
 import { useAppStore } from '@/stores/appStore';
 import type { Notification } from '@/types';
 
 const getNotificationIcon = (type: Notification['type']) => {
   switch (type) {
     case 'success':
-      return FiCheckCircle;
+      return CheckIcon;
     case 'error':
-      return FiAlertCircle;
+      return AlertIcon;
     case 'warning':
-      return FiAlertTriangle;
+      return AlertIcon;
     case 'info':
     default:
-      return FiInfo;
+      return InfoIcon;
   }
 };
 

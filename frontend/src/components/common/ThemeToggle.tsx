@@ -6,7 +6,7 @@ import {
   Tooltip,
   Box,
 } from '@chakra-ui/react';
-import { FiSun, FiMoon } from 'react-icons/fi';
+import { SunIcon, MoonIcon } from '@/components/icons/GeometricIcons';
 import { motion } from 'framer-motion';
 
 const MotionBox = motion(Box);
@@ -43,7 +43,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
             ease: 'easeInOut',
           }}
         >
-          {isDark ? <FiSun /> : <FiMoon />}
+          {isDark ? <SunIcon /> : <MoonIcon />}
         </MotionBox>
       }
       onClick={toggleColorMode}

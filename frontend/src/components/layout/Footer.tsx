@@ -11,7 +11,7 @@ import {
   useColorModeValue,
   Container,
 } from '@chakra-ui/react';
-import { FiGithub, FiHeart, FiExternalLink } from 'react-icons/fi';
+import { GithubIcon, HeartIcon, ExternalLinkIcon } from '@/components/icons/GeometricIcons';
 import { useAppStore } from '@/stores/appStore';
 
 const Footer: React.FC = () => {
@@ -87,9 +87,9 @@ const Footer: React.FC = () => {
                   alignItems="center"
                   gap={1}
                 >
-                  <Icon as={FiGithub} boxSize={4} />
+                  <Icon as={GithubIcon} boxSize={4} />
                   QLoRA Paper
-                  <Icon as={FiExternalLink} boxSize={3} />
+                  <Icon as={ExternalLinkIcon} boxSize={3} />
                 </Link>
                 <Link
                   href="https://huggingface.co/docs/transformers/main/en/peft"
@@ -102,7 +102,7 @@ const Footer: React.FC = () => {
                   gap={1}
                 >
                   Documentation
-                  <Icon as={FiExternalLink} boxSize={3} />
+                  <Icon as={ExternalLinkIcon} boxSize={3} />
                 </Link>
               </HStack>
 
@@ -148,7 +148,7 @@ const Footer: React.FC = () => {
             </Text>
             <HStack spacing={1} fontSize="xs" color={mutedColor}>
               <Text>Made with</Text>
-              <Icon as={FiHeart} color="red.400" boxSize={3} />
+              <Icon as={HeartIcon} color="red.400" boxSize={3} />
               <Text>for the AI community</Text>
             </HStack>
           </Flex>

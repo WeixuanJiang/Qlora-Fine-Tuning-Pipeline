@@ -19,17 +19,15 @@ import {
 } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import {
-  FiHome,
-  FiPlay,
-  FiEdit3,
-  FiBarChart3,
-  FiGitMerge,
-  FiBriefcase,
-  FiSettings,
-  FiActivity,
-  FiTrendingUp,
-  FiTarget,
-} from 'react-icons/fi';
+  HomeIcon,
+  PlayIcon,
+  EditIcon,
+  ChartIcon,
+  MergeIcon,
+  ListIcon,
+  SettingsIcon,
+  ActivityIcon,
+} from '@/components/icons/GeometricIcons';
 import { useAppStore } from '@/stores/appStore';
 import { useJobStore } from '@/stores/jobStore';
 import ThemeToggle from '@/components/common/ThemeToggle';
@@ -51,55 +49,55 @@ const NAV_ITEMS: NavItem[] = [
   {
     name: 'Dashboard',
     path: '/',
-    icon: FiHome,
+    icon: HomeIcon,
   },
   {
     name: 'Train',
     path: '/train',
-    icon: FiPlay,
+    icon: PlayIcon,
   },
   {
     name: 'Generate',
     path: '/generate',
-    icon: FiEdit3,
+    icon: EditIcon,
   },
   {
     name: 'Evaluate',
     path: '/evaluate',
-    icon: FiBarChart3,
+    icon: ChartIcon,
     children: [
       {
         name: 'New Evaluation',
         path: '/evaluate',
-        icon: FiTarget,
+        icon: ChartIcon,
       },
       {
         name: 'Results',
         path: '/evaluate/results',
-        icon: FiTrendingUp,
+        icon: ActivityIcon,
       },
       {
         name: 'Benchmarks',
         path: '/evaluate/benchmarks',
-        icon: FiActivity,
+        icon: ActivityIcon,
       },
     ],
   },
   {
     name: 'Merge',
     path: '/merge',
-    icon: FiGitMerge,
+    icon: MergeIcon,
   },
   {
     name: 'Jobs',
     path: '/jobs',
-    icon: FiBriefcase,
+    icon: ListIcon,
     badge: 'runningJobs',
   },
   {
     name: 'Settings',
     path: '/settings',
-    icon: FiSettings,
+    icon: SettingsIcon,
   },
 ];
 

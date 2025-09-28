@@ -55,23 +55,23 @@ import {
   Spacer,
 } from '@chakra-ui/react';
 import {
-  FiPlay,
-  FiPause,
-  FiStop,
-  FiTrash2,
-  FiMoreVertical,
-  FiRefreshCw,
-  FiEye,
-  FiDownload,
-  FiSearch,
-  FiFilter,
-  FiClock,
-  FiCheckCircle,
-  FiXCircle,
-  FiAlertCircle,
-  FiActivity,
-  FiBarChart3,
-} from 'react-icons/fi';
+  PlayIcon,
+  PauseIcon,
+  StopIcon,
+  TrashIcon,
+  MoreVerticalIcon,
+  RefreshIcon,
+  EyeIcon,
+  DownloadIcon,
+  SearchIcon,
+  FilterIcon,
+  ClockIcon,
+  CheckIcon,
+  XIcon,
+  AlertIcon,
+  ActivityIcon,
+  ChartIcon,
+} from '@/components/icons/GeometricIcons';
 import { motion } from 'framer-motion';
 import { useJobStore } from '@/stores/jobStore';
 import { Job } from '@/types';
@@ -116,12 +116,12 @@ const JobsPage: React.FC = () => {
   
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'running': return FiPlay;
-      case 'completed': return FiCheckCircle;
-      case 'failed': return FiXCircle;
-      case 'paused': return FiPause;
-      case 'pending': return FiClock;
-      default: return FiAlertCircle;
+      case 'running': return PlayIcon;
+      case 'completed': return CheckIcon;
+      case 'failed': return XIcon;
+      case 'paused': return PauseIcon;
+      case 'pending': return ClockIcon;
+      default: return AlertIcon;
     }
   };
   
@@ -239,14 +239,14 @@ const JobsPage: React.FC = () => {
                       <Text fontWeight="semibold" mb={3}>Timeline</Text>
                       <VStack spacing={3} align="stretch">
                         <HStack>
-                          <Icon as={FiPlay} color="blue.500" />
+                          <Icon as={PlayIcon} color="blue.500" />
                           <Text fontSize="sm">
                             Started: {job.startTime.toLocaleString()}
                           </Text>
                         </HStack>
                         {job.endTime && (
                           <HStack>
-                            <Icon as={FiCheckCircle} color="green.500" />
+                            <Icon as={CheckIcon} color="green.500" />
                             <Text fontSize="sm">
                               Ended: {job.endTime.toLocaleString()}
                             </Text>
@@ -333,7 +333,7 @@ const JobsPage: React.FC = () => {
             </Text>
           </Box>
           <Button
-            leftIcon={<FiRefreshCw />}
+            leftIcon={<RefreshIcon />}
             onClick={refreshJobs}
             isLoading={loading}
             colorScheme="primary"
@@ -359,7 +359,7 @@ const JobsPage: React.FC = () => {
                 <StatLabel>Total Jobs</StatLabel>
                 <StatNumber>{jobStats.total}</StatNumber>
                 <StatHelpText>
-                  <Icon as={FiActivity} mr={1} />
+                  <Icon as={ActivityIcon} mr={1} />
                   All time
                 </StatHelpText>
               </Stat>
@@ -380,7 +380,7 @@ const JobsPage: React.FC = () => {
                 <StatLabel>Running</StatLabel>
                 <StatNumber color="blue.500">{jobStats.running}</StatNumber>
                 <StatHelpText>
-                  <Icon as={FiPlay} mr={1} />
+                  <Icon as={PlayIcon} mr={1} />
                   Active now
                 </StatHelpText>
               </Stat>
@@ -401,7 +401,7 @@ const JobsPage: React.FC = () => {
                 <StatLabel>Completed</StatLabel>
                 <StatNumber color="green.500">{jobStats.completed}</StatNumber>
                 <StatHelpText>
-                  <Icon as={FiCheckCircle} mr={1} />
+                  <Icon as={CheckIcon} mr={1} />
                   Successful
                 </StatHelpText>
               </Stat>
@@ -422,7 +422,7 @@ const JobsPage: React.FC = () => {
                 <StatLabel>Failed</StatLabel>
                 <StatNumber color="red.500">{jobStats.failed}</StatNumber>
                 <StatHelpText>
-                  <Icon as={FiXCircle} mr={1} />
+                  <Icon as={XIcon} mr={1} />
                   Errors
                 </StatHelpText>
               </Stat>
@@ -445,7 +445,7 @@ const JobsPage: React.FC = () => {
             <HStack spacing={4}>
               <InputGroup maxW="300px">
                 <InputLeftElement>
-                  <Icon as={FiSearch} color="gray.400" />
+                  <Icon as={SearchIcon} color="gray.400" />
                 </InputLeftElement>
                 <Input
                   placeholder="Search jobs..."
@@ -458,7 +458,7 @@ const JobsPage: React.FC = () => {
                 maxW="200px"
                 value={filters.status}
                 onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                icon={<FiFilter />}
+                icon={<FilterIcon />}
               >
                 <option value="all">All Status</option>
                 <option value="running">Running</option>
@@ -562,14 +562,14 @@ const JobsPage: React.FC = () => {
                           <Menu>
                             <MenuButton
                               as={IconButton}
-                              icon={<FiMoreVertical />}
+                              icon={<MoreVerticalIcon />}
                               variant="ghost"
                               size="sm"
                               onClick={(e) => e.stopPropagation()}
                             />
                             <MenuList>
                               <MenuItem
-                                icon={<FiEye />}
+                                icon={<EyeIcon />}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setSelectedJob(job);
@@ -580,7 +580,7 @@ const JobsPage: React.FC = () => {
                               </MenuItem>
                               {job.status === 'running' && (
                                 <MenuItem
-                                  icon={<FiStop />}
+                                  icon={<StopIcon />}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleJobAction('stop', job.id);
@@ -590,7 +590,7 @@ const JobsPage: React.FC = () => {
                                 </MenuItem>
                               )}
                               <MenuItem
-                                icon={<FiDownload />}
+                                icon={<DownloadIcon />}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   // Handle download logs
@@ -599,7 +599,7 @@ const JobsPage: React.FC = () => {
                                 Download Logs
                               </MenuItem>
                               <MenuItem
-                                icon={<FiTrash2 />}
+                                icon={<TrashIcon />}
                                 color="red.500"
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -620,7 +620,7 @@ const JobsPage: React.FC = () => {
             
             {filteredJobs.length === 0 && (
               <Box p={8} textAlign="center">
-                <Icon as={FiBarChart3} boxSize={12} color="gray.400" mb={4} />
+                <Icon as={ChartIcon} boxSize={12} color="gray.400" mb={4} />
                 <Text fontSize="lg" fontWeight="medium" color="gray.500" mb={2}>
                   No jobs found
                 </Text>

@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__chrome-devtools__list_pages",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__take_snapshot",
+      "Bash(docker compose:*)",
+      "Bash(docker exec:*)",
+      "Bash(npm install:*)",
+      "WebFetch(domain:www.chakra-ui.com)",
+      "WebSearch",
+      "mcp__chrome-devtools__list_network_requests",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__list_console_messages",
+      "Bash(npm run build:*)",
+      "mcp__chrome-devtools__evaluate_script",
+      "Read(//mnt/c/Users/long8/OneDrive/Desktop/**)",
+      "Bash(find:*)",
+      "mcp__chrome-devtools__resize_page"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

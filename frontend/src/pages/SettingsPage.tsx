@@ -1,78 +1,76 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box,
-  VStack,
-  HStack,
-  Card,
-  CardBody,
-  CardHeader,
-  Heading,
-  Text,
-  Button,
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Badge,
-  SimpleGrid,
+  Box,
+  Button,
+  Box as Card,
+  
+  
+  Code,
+  Flex,
   FormControl,
   FormLabel,
-  Select,
+  HStack,
+  Heading,
+  Icon,
+  IconButton,
   Input,
-  Textarea,
-  Switch,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  Icon,
-  IconButton,
-  useColorModeValue,
-  useColorMode,
-  useToast,
-  Alert,
-  AlertIcon,
+  Progress,
+  Radio,
+  RadioGroup,
+  Select,
   Divider,
-  Code,
-  Flex,
+  SimpleGrid,
+  Slider,
+  SliderFilledTrack,
+  SliderMark,
+  SliderThumb,
+  SliderTrack,
   Spacer,
-  Tooltip,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  ModalFooter,
-  useDisclosure,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
+  Stack,
   Stat,
+  StatHelpText,
   StatLabel,
   StatNumber,
-  StatHelpText,
-  RadioGroup,
-  Radio,
-  Stack,
-  Progress,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
   Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
   TableContainer,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderMark,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
+  Tbody,
+  Td,
+  Text,
+  Textarea,
+  Th,
+  Thead,
+  Tooltip,
+  Tr,
+  VStack,
+  useColorMode,
+  useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/common/Alert';
+import { useColorModeValue } from '@/hooks/useColorModeValue';
 import {
   SettingsIcon,
   SaveIcon,
@@ -90,6 +88,7 @@ import {
   MoonIcon,
   SunIcon,
   MonitorIcon,
+  AlertIcon as WarningTriangleIcon,
   GlobeIcon,
   MailIcon,
   BellIcon,
@@ -98,8 +97,7 @@ import {
   EyeIcon,
   EyeOffIcon,
   InfoIcon,
-  AlertIcon,
-  CheckIcon,
+    CheckIcon,
   FolderIcon,
   EditIcon,
 } from '@/components/icons/GeometricIcons';
@@ -198,7 +196,7 @@ const SettingsPage: React.FC = () => {
   const [tempApiKey, setTempApiKey] = useState('');
   
   const toast = useToast();
-  const cardBg = useColorModeValue('white', 'gray.800');
+  const cardBg = 'white';
   
   useEffect(() => {
     // Load system info
@@ -330,7 +328,7 @@ const SettingsPage: React.FC = () => {
         <ModalContent>
           <ModalHeader>
             <HStack spacing={3}>
-              <Icon as={AlertIcon} color="red.500" />
+              <Icon as={WarningTriangleIcon} color="red.500" />
               <Text>Reset Data</Text>
             </HStack>
           </ModalHeader>
@@ -440,18 +438,18 @@ const SettingsPage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <CardHeader>
+                <Box>
                   <HStack spacing={3}>
                     <Icon as={colorMode === 'light' ? SunIcon : MoonIcon} color="primary.500" />
                     <Heading size="md">Appearance</Heading>
                   </HStack>
-                </CardHeader>
-                <CardBody>
+                </Box>
+                <Box>
                   <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                     <FormControl>
                       <FormLabel>Theme</FormLabel>
@@ -512,7 +510,7 @@ const SettingsPage: React.FC = () => {
                       </Select>
                     </FormControl>
                   </SimpleGrid>
-                </CardBody>
+                </Box>
               </MotionCard>
               
               {/* Notifications */}
@@ -521,18 +519,18 @@ const SettingsPage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.3 }}
               >
-                <CardHeader>
+                <Box>
                   <HStack spacing={3}>
                     <Icon as={BellIcon} color="primary.500" />
                     <Heading size="md">Notifications</Heading>
                   </HStack>
-                </CardHeader>
-                <CardBody>
+                </Box>
+                <Box>
                   <VStack spacing={4} align="stretch">
                     <HStack justify="space-between">
                       <VStack align="start" spacing={1}>
@@ -619,7 +617,7 @@ const SettingsPage: React.FC = () => {
                       />
                     </HStack>
                   </VStack>
-                </CardBody>
+                </Box>
               </MotionCard>
               
               {/* General Preferences */}
@@ -628,18 +626,18 @@ const SettingsPage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.3 }}
               >
-                <CardHeader>
+                <Box>
                   <HStack spacing={3}>
                     <Icon as={SettingsIcon} color="primary.500" />
                     <Heading size="md">General Preferences</Heading>
                   </HStack>
-                </CardHeader>
-                <CardBody>
+                </Box>
+                <Box>
                   <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                     <FormControl>
                       <FormLabel>Default Output Path</FormLabel>
@@ -695,7 +693,7 @@ const SettingsPage: React.FC = () => {
                       </HStack>
                     </VStack>
                   </SimpleGrid>
-                </CardBody>
+                </Box>
               </MotionCard>
             </VStack>
           </TabPanel>
@@ -709,18 +707,18 @@ const SettingsPage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <CardHeader>
+                <Box>
                   <HStack spacing={3}>
                     <Icon as={ServerIcon} color="primary.500" />
                     <Heading size="md">API Configuration</Heading>
                   </HStack>
-                </CardHeader>
-                <CardBody>
+                </Box>
+                <Box>
                   <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                     <FormControl>
                       <FormLabel>Base URL</FormLabel>
@@ -798,7 +796,7 @@ const SettingsPage: React.FC = () => {
                       colorScheme="primary"
                     />
                   </HStack>
-                </CardBody>
+                </Box>
               </MotionCard>
               
               {/* Security */}
@@ -807,18 +805,18 @@ const SettingsPage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.3 }}
               >
-                <CardHeader>
+                <Box>
                   <HStack spacing={3}>
                     <Icon as={ShieldIcon} color="primary.500" />
                     <Heading size="md">Security</Heading>
                   </HStack>
-                </CardHeader>
-                <CardBody>
+                </Box>
+                <Box>
                   <VStack spacing={6} align="stretch">
                     <FormControl>
                       <FormLabel>API Key</FormLabel>
@@ -847,7 +845,7 @@ const SettingsPage: React.FC = () => {
                       </Box>
                     </Alert>
                   </VStack>
-                </CardBody>
+                </Box>
               </MotionCard>
             </VStack>
           </TabPanel>
@@ -861,12 +859,12 @@ const SettingsPage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <CardHeader>
+                <Box>
                   <HStack spacing={3} justify="space-between">
                     <HStack spacing={3}>
                       <Icon as={InfoIcon} color="primary.500" />
@@ -882,8 +880,8 @@ const SettingsPage: React.FC = () => {
                       Refresh
                     </Button>
                   </HStack>
-                </CardHeader>
-                <CardBody>
+                </Box>
+                <Box>
                   <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                     <Stat>
                       <StatLabel>Application Version</StatLabel>
@@ -948,7 +946,7 @@ const SettingsPage: React.FC = () => {
                       </VStack>
                     </Box>
                   </SimpleGrid>
-                </CardBody>
+                </Box>
               </MotionCard>
             </VStack>
           </TabPanel>
@@ -962,18 +960,18 @@ const SettingsPage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <CardHeader>
+                <Box>
                   <HStack spacing={3}>
                     <Icon as={SettingsIcon} color="primary.500" />
                     <Heading size="md">Advanced Settings</Heading>
                   </HStack>
-                </CardHeader>
-                <CardBody>
+                </Box>
+                <Box>
                   <Accordion allowToggle>
                     <AccordionItem>
                       <AccordionButton>
@@ -1069,7 +1067,7 @@ const SettingsPage: React.FC = () => {
                       </AccordionPanel>
                     </AccordionItem>
                   </Accordion>
-                </CardBody>
+                </Box>
               </MotionCard>
               
               {/* Danger Zone */}
@@ -1083,13 +1081,13 @@ const SettingsPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.3 }}
               >
-                <CardHeader>
+                <Box>
                   <HStack spacing={3}>
-                    <Icon as={AlertIcon} color="red.500" />
+                    <Icon as={WarningTriangleIcon} color="red.500" />
                     <Heading size="md" color="red.500">Danger Zone</Heading>
                   </HStack>
-                </CardHeader>
-                <CardBody>
+                </Box>
+                <Box>
                   <VStack spacing={4} align="stretch">
                     <Alert status="warning">
                       <AlertIcon />
@@ -1113,7 +1111,7 @@ const SettingsPage: React.FC = () => {
                       </Button>
                     </HStack>
                   </VStack>
-                </CardBody>
+                </Box>
               </MotionCard>
             </VStack>
           </TabPanel>

@@ -17,7 +17,7 @@ interface JobState extends JobStore {
   deleteJob: (id: string) => Promise<void>;
 }
 
-const useJobStore = create<JobState>()((set, get) => ({
+export const useJobStore = create<JobState>()((set, get) => ({
   // Initial state
   jobs: [],
   selectedJob: null,

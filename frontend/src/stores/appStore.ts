@@ -13,7 +13,7 @@ interface AppState extends AppStore {
   updateUserPreferences: (preferences: Partial<UserPreferences>) => void;
 }
 
-const useAppStore = create<AppState>()()
+export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       // Initial state
@@ -92,6 +92,7 @@ const useAppStore = create<AppState>()()
         user: state.user,
       }),
     }
-  );
+  )
+);
 
 export default useAppStore;

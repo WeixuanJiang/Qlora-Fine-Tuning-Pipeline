@@ -8,19 +8,20 @@ import {
   Link,
   Icon,
   Divider,
-  useColorModeValue,
+  
   Container,
 } from '@chakra-ui/react';
+import { useColorModeValue } from '@/hooks/useColorModeValue';
 import { GithubIcon, HeartIcon, ExternalLinkIcon } from '@/components/icons/GeometricIcons';
 import { useAppStore } from '@/stores/appStore';
 
 const Footer: React.FC = () => {
   const { apiStatus } = useAppStore();
-  const bgColor = useColorModeValue('gray.50', 'gray.900');
-  const borderColor = useColorModeValue('gray.200', 'gray.700');
-  const textColor = useColorModeValue('gray.600', 'gray.400');
-  const linkColor = useColorModeValue('primary.600', 'primary.300');
-  const mutedColor = useColorModeValue('gray.500', 'gray.500');
+  const bgColor = 'white';
+  const borderColor = 'gray.200';
+  const textColor = 'gray.600';
+  const linkColor = 'primary.600';
+  const mutedColor = 'gray.500';
 
   const currentYear = new Date().getFullYear();
 
@@ -46,20 +47,21 @@ const Footer: React.FC = () => {
             <VStack align={{ base: 'center', md: 'flex-start' }} spacing={2}>
               <HStack spacing={2}>
                 <Box
-                  w={6}
-                  h={6}
-                  bg="primary.500"
-                  borderRadius="md"
+                  w={8}
+                  h={8}
+                  bgGradient="linear(135deg, primary.500, primary.600)"
+                  borderRadius="lg"
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
                   color="white"
                   fontSize="sm"
                   fontWeight="bold"
+                  boxShadow="sm"
                 >
                   Q
                 </Box>
-                <Text fontWeight="bold" color={textColor}>
+                <Text fontWeight="bold" color={textColor} fontSize="md">
                   QLoRA Copilot
                 </Text>
               </HStack>

@@ -28,6 +28,10 @@ from train import train as run_training  # noqa: E402  # type: ignore
 from run_inference import ModelInference  # noqa: E402  # type: ignore
 from eval import ModelEvaluator, EVAL_MODEL  # noqa: E402  # type: ignore
 from merge_multiple_loras import merge_multiple_loras  # noqa: E402  # type: ignore
+from backend.dataset_utils import DatasetManager, DatasetValidator  # noqa: E402  # type: ignore
+from backend.monitoring import get_current_metrics, get_metrics_collector  # noqa: E402  # type: ignore
+from backend.model_utils import ModelComparator, CheckpointManager, ModelExporter  # noqa: E402  # type: ignore
+from backend.evaluation_utils import EvaluationManager  # noqa: E402  # type: ignore
 
 app = FastAPI(title="QLoRA Pipeline API")
 
@@ -1206,3 +1210,80 @@ async def upload_dataset(
         "path": str(dest_path.relative_to(PROJECT_ROOT)),
         "size": len(content),
     }
+
+
+@app.get("/datasets")
+def list_datasets() -> Dict[str, Any]:
+    """List all available datasets"""
+    data_dir = PROJECT_ROOT / "data"
+    manager = DatasetManager(str(data_dir))
+    datasets = manager.list_datasets()
+    return {"datasets": datasets}
+
+
+@app.get("/datasets/{dataset_name}/info")
+def get_dataset_info(dataset_name: str) -> Dict[str, Any]:
+    """Get detailed information about a dataset"""
+    data_dir = PROJECT_ROOT / "data"
+    dataset_path = data_dir / dataset_name
+
+    if not dataset_path.exists():
+        raise HTTPException(status_code=404, detail=f"Dataset not found: {dataset_name}")
+
+    manager = DatasetManager(str(data_dir))
+    return manager.get_dataset_info(str(dataset_path))
+
+
+@app.get("/datasets/{dataset_name}/preview")
+def preview_dataset(
+    dataset_name: str,
+    num_examples: int = Query(default=10, ge=1, le=100)
+) -> Dict[str, Any]:
+    """Preview dataset with sample examples"""
+    data_dir = PROJECT_ROOT / "data"
+    dataset_path = data_dir / dataset_name
+
+    if not dataset_path.exists():
+        raise HTTPException(status_code=404, detail=f"Dataset not found: {dataset_name}")
+
+    manager = DatasetManager(str(data_dir))
+    result = manager.preview_dataset(str(dataset_path), num_examples=num_examples)
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error", "Failed to preview dataset"))
+
+    return result
+
+
+@app.post("/datasets/validate")
+async def validate_dataset(file: UploadFile = File(...)) -> Dict[str, Any]:
+    """Validate a dataset file without saving it"""
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="File must have a name")
+
+    # Save to temporary location
+    import tempfile
+    with tempfile.NamedTemporaryFile(delete=False, suffix=Path(file.filename).suffix) as tmp:
+        content = await file.read()
+        tmp.write(content)
+        tmp_path = tmp.name
+
+    try:
+        validator = DatasetValidator()
+        result = validator.validate_file(tmp_path)
+
+        response = {
+            "is_valid": result.is_valid,
+            "errors": result.errors,
+            "warnings": result.warnings,
+        }
+
+        if result.stats:
+            from dataclasses import asdict
+            response["stats"] = asdict(result.stats)
+
+        return response
+    finally:
+        # Clean up temp file
+        if os.path.exists(tmp_path):
+            os.unlink(tmp_path)

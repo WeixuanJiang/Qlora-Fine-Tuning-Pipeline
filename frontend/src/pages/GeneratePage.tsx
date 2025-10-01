@@ -3,9 +3,9 @@ import {
   Box,
   VStack,
   HStack,
-  Card,
-  CardBody,
-  CardHeader,
+  Box as Card,
+  
+  
   Heading,
   Text,
   FormControl,
@@ -27,7 +27,7 @@ import {
   Divider,
   Badge,
   Icon,
-  useColorModeValue,
+  
   useToast,
   SimpleGrid,
   Switch,
@@ -37,9 +37,9 @@ import {
   AccordionPanel,
   AccordionIcon,
   Code,
-  Alert,
-  AlertIcon,
 } from '@chakra-ui/react';
+import { useColorModeValue } from '@/hooks/useColorModeValue';
+import { Alert, AlertIcon } from '@/components/common/Alert';
 import {
   PlayIcon,
   CopyIcon,
@@ -125,8 +125,8 @@ const GeneratePage: React.FC = () => {
   const { models } = useModelStore();
   const toast = useToast();
   
-  const cardBg = useColorModeValue('white', 'gray.800');
-  const codeBg = useColorModeValue('gray.50', 'gray.900');
+  const cardBg = 'white';
+  const codeBg = 'gray.50';
   
   const handleParamChange = (field: keyof GenerationParams, value: any) => {
     setParams(prev => ({ ...prev, [field]: value }));
@@ -230,18 +230,18 @@ This is a mock response for demonstration purposes. In a real implementation, th
             shadow="sm"
             borderRadius="xl"
             border="1px"
-            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            borderColor={'gray.200'}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <CardHeader>
+            <Box>
               <HStack spacing={3}>
                 <Icon as={TypeIcon} color="primary.500" boxSize={5} />
                 <Heading size="md">Input Prompt</Heading>
               </HStack>
-            </CardHeader>
-            <CardBody>
+            </Box>
+            <Box>
               <VStack spacing={4} align="stretch">
                 <FormControl>
                   <FormLabel>Prompt</FormLabel>
@@ -301,7 +301,7 @@ This is a mock response for demonstration purposes. In a real implementation, th
                   </SimpleGrid>
                 </Box>
               </VStack>
-            </CardBody>
+            </Box>
           </MotionCard>
           
           {/* Generation Parameters */}
@@ -310,7 +310,7 @@ This is a mock response for demonstration purposes. In a real implementation, th
             shadow="sm"
             borderRadius="xl"
             border="1px"
-            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            borderColor={'gray.200'}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1, duration: 0.3 }}
@@ -473,12 +473,12 @@ This is a mock response for demonstration purposes. In a real implementation, th
             shadow="sm"
             borderRadius="xl"
             border="1px"
-            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            borderColor={'gray.200'}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <CardBody p={6}>
+            <Box p={6}>
               <VStack spacing={4}>
                 <Button
                   size="lg"
@@ -524,7 +524,7 @@ This is a mock response for demonstration purposes. In a real implementation, th
                   </HStack>
                 )}
               </VStack>
-            </CardBody>
+            </Box>
           </MotionCard>
           
           {/* Generated Output */}
@@ -533,12 +533,12 @@ This is a mock response for demonstration purposes. In a real implementation, th
             shadow="sm"
             borderRadius="xl"
             border="1px"
-            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            borderColor={'gray.200'}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1, duration: 0.3 }}
           >
-            <CardHeader>
+            <Box>
               <HStack justify="space-between">
                 <HStack spacing={3}>
                   <Icon as={ZapIcon} color="primary.500" boxSize={5} />
@@ -550,15 +550,15 @@ This is a mock response for demonstration purposes. In a real implementation, th
                   </Badge>
                 )}
               </HStack>
-            </CardHeader>
-            <CardBody>
+            </Box>
+            <Box>
               {generatedText ? (
                 <Box
                   bg={codeBg}
                   p={4}
                   borderRadius="md"
                   border="1px"
-                  borderColor={useColorModeValue('gray.200', 'gray.600')}
+                  borderColor={'gray.200'}
                 >
                   <Text whiteSpace="pre-wrap" fontSize="sm" lineHeight="tall">
                     {generatedText}
@@ -570,7 +570,7 @@ This is a mock response for demonstration purposes. In a real implementation, th
                   <Text>Generated text will appear here after you click "Generate Text"</Text>
                 </Alert>
               )}
-            </CardBody>
+            </Box>
           </MotionCard>
           
           {/* Generation History */}
@@ -580,24 +580,24 @@ This is a mock response for demonstration purposes. In a real implementation, th
               shadow="sm"
               borderRadius="xl"
               border="1px"
-              borderColor={useColorModeValue('gray.200', 'gray.700')}
+              borderColor={'gray.200'}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.3 }}
             >
-              <CardHeader>
+              <Box>
                 <Heading size="md">Recent Generations</Heading>
-              </CardHeader>
-              <CardBody>
+              </Box>
+              <Box>
                 <VStack spacing={4} align="stretch">
                   {generationHistory.slice(0, 3).map((item, index) => (
                     <Box
                       key={index}
                       p={4}
-                      bg={useColorModeValue('gray.50', 'gray.700')}
+                      bg={'gray.50'}
                       borderRadius="md"
                       border="1px"
-                      borderColor={useColorModeValue('gray.200', 'gray.600')}
+                      borderColor={'gray.200'}
                     >
                       <VStack align="stretch" spacing={2}>
                         <HStack justify="space-between">
@@ -618,7 +618,7 @@ This is a mock response for demonstration purposes. In a real implementation, th
                     </Box>
                   ))}
                 </VStack>
-              </CardBody>
+              </Box>
             </MotionCard>
           )}
         </VStack>

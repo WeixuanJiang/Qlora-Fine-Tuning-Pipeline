@@ -33,27 +33,34 @@ graph TD
 
 ## 2. Technology Description
 
-- Frontend: React@18 + TypeScript@5 + Vite@5
-- UI Library: Chakra UI@2 + Framer Motion@10
-- State Management: Zustand@4 + React Query@5
-- Styling: Emotion@11 + CSS-in-JS
-- Charts: Chart.js@4 + React-Chartjs-2@5
-- Icons: Lucide React@0.263
-- Code Editor: Monaco Editor@0.44
-- Build Tool: Vite@5 with TypeScript support
+* Frontend: React\@18 + TypeScript\@5 + Vite\@5
+
+* UI Library: Chakra UI\@2 + Framer Motion\@10
+
+* State Management: Zustand\@4 + React Query\@5
+
+* Styling: Emotion\@11 + CSS-in-JS
+
+* Charts: Chart.js\@4 + React-Chartjs-2\@5
+
+* Icons: Lucide React\@0.263
+
+* Code Editor: Monaco Editor\@0.44
+
+* Build Tool: Vite\@5 with TypeScript support
 
 ## 3. Route Definitions
 
-| Route | Purpose |
-|-------|---------|
-| / | Dashboard page with overview cards, activity feed, and quick actions |
-| /train | Fine-tuning page with dataset upload and parameter configuration |
-| /playground | Model testing interface with prompt experimentation |
-| /evaluate | Evaluation management with job queue and results |
-| /evaluate/dashboard | Interactive evaluation dashboard with charts and metrics |
-| /publish | Model publishing and adapter merging interface |
-| /activity | Real-time job monitoring and log viewing |
-| /settings | Application settings, themes, and preferences |
+| Route               | Purpose                                                              |
+| ------------------- | -------------------------------------------------------------------- |
+| /                   | Dashboard page with overview cards, activity feed, and quick actions |
+| /train              | Fine-tuning page with dataset upload and parameter configuration     |
+| /playground         | Model testing interface with prompt experimentation                  |
+| /evaluate           | Evaluation management with job queue and results                     |
+| /evaluate/dashboard | Interactive evaluation dashboard with charts and metrics             |
+| /publish            | Model publishing and adapter merging interface                       |
+| /activity           | Real-time job monitoring and log viewing                             |
+| /settings           | Application settings, themes, and preferences                        |
 
 ## 4. Component Architecture
 
@@ -238,70 +245,110 @@ interface FormState<T> {
 ## 7. Performance Optimization Strategy
 
 ### 7.1 Code Splitting
-- Route-based code splitting for each main page
-- Component-level lazy loading for heavy components
-- Dynamic imports for chart libraries and Monaco editor
+
+* Route-based code splitting for each main page
+
+* Component-level lazy loading for heavy components
+
+* Dynamic imports for chart libraries and Monaco editor
 
 ### 7.2 Caching Strategy
-- React Query for API response caching with stale-while-revalidate
-- Browser storage for user preferences and theme settings
-- Service worker for offline functionality (future enhancement)
+
+* React Query for API response caching with stale-while-revalidate
+
+* Browser storage for user preferences and theme settings
+
+* Service worker for offline functionality (future enhancement)
 
 ### 7.3 Bundle Optimization
-- Tree shaking for unused Chakra UI components
-- Webpack bundle analyzer integration
-- Compression and minification in production builds
+
+* Tree shaking for unused Chakra UI components
+
+* Webpack bundle analyzer integration
+
+* Compression and minification in production builds
 
 ## 8. Accessibility Implementation
 
 ### 8.1 ARIA Standards
-- Semantic HTML structure with proper heading hierarchy
-- ARIA labels and descriptions for complex interactions
-- Live regions for dynamic content updates
-- Focus management for modal dialogs and navigation
+
+* Semantic HTML structure with proper heading hierarchy
+
+* ARIA labels and descriptions for complex interactions
+
+* Live regions for dynamic content updates
+
+* Focus management for modal dialogs and navigation
 
 ### 8.2 Keyboard Navigation
-- Tab order management with proper focus indicators
-- Keyboard shortcuts for common actions
-- Skip links for main content areas
-- Escape key handling for modal dismissal
+
+* Tab order management with proper focus indicators
+
+* Keyboard shortcuts for common actions
+
+* Skip links for main content areas
+
+* Escape key handling for modal dismissal
 
 ### 8.3 Screen Reader Support
-- Descriptive text for data visualizations
-- Alternative text for images and icons
-- Status announcements for job progress
-- Form validation error announcements
+
+* Descriptive text for data visualizations
+
+* Alternative text for images and icons
+
+* Status announcements for job progress
+
+* Form validation error announcements
 
 ## 9. Testing Strategy
 
 ### 9.1 Unit Testing
-- Jest + React Testing Library for component testing
-- MSW (Mock Service Worker) for API mocking
-- Accessibility testing with jest-axe
+
+* Jest + React Testing Library for component testing
+
+* MSW (Mock Service Worker) for API mocking
+
+* Accessibility testing with jest-axe
 
 ### 9.2 Integration Testing
-- Cypress for end-to-end workflow testing
-- Visual regression testing with Percy or Chromatic
-- Performance testing with Lighthouse CI
+
+* Cypress for end-to-end workflow testing
+
+* Visual regression testing with Percy or Chromatic
+
+* Performance testing with Lighthouse CI
 
 ### 9.3 Quality Assurance
-- ESLint + Prettier for code formatting
-- TypeScript strict mode for type safety
-- Husky pre-commit hooks for quality gates
+
+* ESLint + Prettier for code formatting
+
+* TypeScript strict mode for type safety
+
+* Husky pre-commit hooks for quality gates
 
 ## 10. Deployment and Build Process
 
 ### 10.1 Build Configuration
-- Vite production build with optimizations
-- Environment-specific configuration files
-- Docker containerization for consistent deployment
+
+* Vite production build with optimizations
+
+* Environment-specific configuration files
+
+* Docker containerization for consistent deployment
 
 ### 10.2 CI/CD Pipeline
-- GitHub Actions for automated testing and building
-- Automated accessibility and performance audits
-- Staged deployment with rollback capabilities
+
+* GitHub Actions for automated testing and building
+
+* Automated accessibility and performance audits
+
+* Staged deployment with rollback capabilities
 
 ### 10.3 Monitoring
-- Error tracking with Sentry integration
-- Performance monitoring with Web Vitals
-- User analytics for UX improvement insights
+
+* Error tracking with Sentry integration
+
+* Performance monitoring with Web Vitals
+
+* User analytics for UX improvement insights
+

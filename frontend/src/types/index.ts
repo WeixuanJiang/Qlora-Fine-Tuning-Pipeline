@@ -129,6 +129,7 @@ export interface Notification {
   message: string;
   timestamp: string;
   isRead: boolean;
+  duration?: number;
 }
 
 // Component prop interfaces

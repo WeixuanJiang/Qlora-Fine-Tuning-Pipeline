@@ -12,11 +12,12 @@ import {
   Text,
   Icon,
   Badge,
-  useColorModeValue,
+  
   Divider,
   Flex,
   Spacer,
 } from '@chakra-ui/react';
+import { useColorModeValue } from '@/hooks/useColorModeValue';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import {
   HomeIcon,
@@ -110,10 +111,10 @@ const MobileNavItem: React.FC<{
   const { runningJobs } = useJobStore();
   const isActive = location.pathname === item.path;
   
-  const activeBg = useColorModeValue('primary.50', 'primary.900');
-  const activeColor = useColorModeValue('primary.600', 'primary.200');
-  const hoverBg = useColorModeValue('gray.50', 'gray.700');
-  const textColor = useColorModeValue('gray.700', 'gray.200');
+  const activeBg = 'primary.50';
+  const activeColor = 'primary.600';
+  const hoverBg = 'gray.50';
+  const textColor = 'gray.600';
   
   const getBadgeValue = (badgeKey: string) => {
     switch (badgeKey) {
@@ -186,8 +187,8 @@ const MobileNavItem: React.FC<{
 
 const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
   const { apiStatus } = useAppStore();
-  const drawerBg = useColorModeValue('white', 'gray.800');
-  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const drawerBg = 'white';
+  const borderColor = 'gray.200';
   
   const getStatusColor = (status: string) => {
     switch (status) {

@@ -7,9 +7,9 @@ RUN apk add --no-cache python3 make g++ libc6-compat
 ARG VITE_API_URL=http://localhost:8000
 ENV VITE_API_URL=$VITE_API_URL
 
-COPY package.json package-lock.json* .
-# Use npm ci for faster, reliable, reproducible builds and add flags for compatibility
-RUN npm ci --legacy-peer-deps --no-audit --no-fund
+COPY package.json package-lock.json ./
+# Use npm install for compatibility with lockfile version
+RUN npm install --legacy-peer-deps --no-audit --no-fund
 
 COPY . .
 RUN npm run build

@@ -2,10 +2,11 @@ import React from 'react';
 import {
   IconButton,
   useColorMode,
-  useColorModeValue,
+  
   Tooltip,
   Box,
 } from '@chakra-ui/react';
+import { useColorModeValue } from '@/hooks/useColorModeValue';
 import { SunIcon, MoonIcon } from '@/components/icons/GeometricIcons';
 import { motion } from 'framer-motion';
 
@@ -25,8 +26,8 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
   const { colorMode, toggleColorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   
-  const buttonBg = useColorModeValue('gray.100', 'gray.700');
-  const hoverBg = useColorModeValue('gray.200', 'gray.600');
+  const buttonBg = 'gray.100';
+  const hoverBg = 'gray.200';
   
   const button = (
     <IconButton

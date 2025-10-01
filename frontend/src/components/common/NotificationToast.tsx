@@ -1,21 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import {
-  useToast,
   Box,
   HStack,
   VStack,
   Text,
   IconButton,
   Icon,
+  Portal,
 } from '@chakra-ui/react';
-import { CloseIcon } from '@chakra-ui/icons';
 import {
   CheckIcon,
-  AlertIcon,
-  InfoIcon,
+    InfoIcon,
+  CloseIcon,
 } from '@/components/icons/GeometricIcons';
 import { useAppStore } from '@/stores/appStore';
 import type { Notification } from '@/types';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const getNotificationIcon = (type: Notification['type']) => {
   switch (type) {
@@ -57,12 +57,10 @@ const CustomToast: React.FC<CustomToastProps> = ({ notification, onClose }) => {
   return (
     <Box
       bg="white"
-      _dark={{ bg: 'gray.800' }}
       borderRadius="lg"
       boxShadow="lg"
       border="1px"
       borderColor={`${colorScheme}.200`}
-      _dark={{ borderColor: `${colorScheme}.600` }}
       p={4}
       minW="300px"
       maxW="400px"
@@ -79,8 +77,7 @@ const CustomToast: React.FC<CustomToastProps> = ({ notification, onClose }) => {
           <Text
             fontWeight="semibold"
             fontSize="sm"
-            color="gray.900"
-            _dark={{ color: 'white' }}
+            color="gray.600"
             lineHeight="short"
           >
             {notification.title}
@@ -120,38 +117,92 @@ const CustomToast: React.FC<CustomToastProps> = ({ notification, onClose }) => {
   );
 };
 
+const MotionBox = motion(Box);
+
 const NotificationToast: React.FC = () => {
-  const toast = useToast();
   const { notifications, removeNotification, markNotificationAsRead } = useAppStore();
+  const timersRef = useRef<Record<string, number>>({});
+
+  // Track active notifications to manage timers without mutating array identities unnecessarily
+  const activeNotifications = useMemo(() => notifications.slice().reverse(), [notifications]);
 
   useEffect(() => {
-    // Show new notifications as toasts
-    notifications
-      .filter(notification => !notification.read)
-      .forEach(notification => {
-        // Mark as read immediately to prevent duplicate toasts
+    activeNotifications.forEach((notification) => {
+      if (!notification.isRead) {
         markNotificationAsRead(notification.id);
+      }
 
-        toast({
-          duration: notification.duration || 5000,
-          isClosable: true,
-          position: 'top-right',
-          render: ({ onClose }) => (
-            <CustomToast
-              notification={notification}
-              onClose={() => {
-                onClose();
-                removeNotification(notification.id);
-              }}
-            />
-          ),
-        });
-      });
-  }, [notifications, toast, markNotificationAsRead, removeNotification]);
+      if (timersRef.current[notification.id] != null) {
+        return;
+      }
 
-  // This component doesn't render anything visible
-  // It only manages the toast notifications
-  return null;
+      const timeout = window.setTimeout(() => {
+        removeNotification(notification.id);
+        window.clearTimeout(timersRef.current[notification.id]!);
+        delete timersRef.current[notification.id];
+      }, notification.duration ?? 5000);
+
+      timersRef.current[notification.id] = timeout;
+    });
+
+    Object.keys(timersRef.current).forEach((id) => {
+      if (!activeNotifications.some((notification) => notification.id === id)) {
+        window.clearTimeout(timersRef.current[id]!);
+        delete timersRef.current[id];
+      }
+    });
+  }, [activeNotifications, markNotificationAsRead, removeNotification]);
+
+  useEffect(() => {
+    return () => {
+      Object.values(timersRef.current).forEach((timeout) => window.clearTimeout(timeout));
+      timersRef.current = {};
+    };
+  }, []);
+
+  if (activeNotifications.length === 0) {
+    return null;
+  }
+
+  return (
+    <Portal>
+      <Box
+        position="fixed"
+        top={4}
+        right={4}
+        zIndex="toast"
+        display="flex"
+        flexDirection="column"
+        alignItems="flex-end"
+        gap={3}
+        pointerEvents="none"
+      >
+        <AnimatePresence initial={false}>
+          {activeNotifications.map((notification) => (
+            <MotionBox
+              key={notification.id}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              pointerEvents="auto"
+            >
+              <CustomToast
+                notification={notification}
+                onClose={() => {
+                  if (timersRef.current[notification.id] != null) {
+                    window.clearTimeout(timersRef.current[notification.id]!);
+                    delete timersRef.current[notification.id];
+                  }
+                  removeNotification(notification.id);
+                }}
+              />
+            </MotionBox>
+          ))}
+        </AnimatePresence>
+      </Box>
+    </Portal>
+  );
 };
 
 export default NotificationToast;

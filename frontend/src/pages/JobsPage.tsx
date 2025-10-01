@@ -1,59 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box,
-  VStack,
-  HStack,
-  Card,
-  CardBody,
-  CardHeader,
-  Heading,
-  Text,
-  Button,
   Badge,
-  Progress,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
+  Box,
+  Button,
+  Box as Card,
+  
+  
+  Code,
+  Flex,
+  HStack,
+  Heading,
   Icon,
   IconButton,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  useColorModeValue,
-  useToast,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  SimpleGrid,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  Divider,
-  Code,
-  Alert,
-  AlertIcon,
   Input,
   InputGroup,
   InputLeftElement,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Progress,
   Select,
-  Flex,
+  Divider,
+  SimpleGrid,
   Spacer,
+  Stat,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  VStack,
+  useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon } from '@/components/common/Alert';
+import { useColorModeValue } from '@/hooks/useColorModeValue';
 import {
   PlayIcon,
   PauseIcon,
@@ -68,7 +66,7 @@ import {
   ClockIcon,
   CheckIcon,
   XIcon,
-  AlertIcon,
+  AlertIcon as WarningTriangleIcon,
   ActivityIcon,
   ChartIcon,
 } from '@/components/icons/GeometricIcons';
@@ -96,8 +94,8 @@ const JobsPage: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   
-  const cardBg = useColorModeValue('white', 'gray.800');
-  const tableBg = useColorModeValue('white', 'gray.800');
+  const cardBg = 'white';
+  const tableBg = 'white';
   
   useEffect(() => {
     refreshJobs();
@@ -121,7 +119,7 @@ const JobsPage: React.FC = () => {
       case 'failed': return XIcon;
       case 'paused': return PauseIcon;
       case 'pending': return ClockIcon;
-      default: return AlertIcon;
+      default: return WarningTriangleIcon;
     }
   };
   
@@ -260,7 +258,7 @@ const JobsPage: React.FC = () => {
                 <TabPanel>
                   <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
                     {Object.entries(job.parameters).map(([key, value]) => (
-                      <Box key={key} p={3} bg={useColorModeValue('gray.50', 'gray.700')} borderRadius="md">
+                      <Box key={key} p={3} bg={'gray.50'} borderRadius="md">
                         <Text fontSize="sm" fontWeight="medium" color="gray.500" mb={1}>
                           {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                         </Text>
@@ -283,7 +281,7 @@ const JobsPage: React.FC = () => {
                 
                 <TabPanel>
                   <Box
-                    bg={useColorModeValue('gray.50', 'gray.900')}
+                    bg={'gray.50'}
                     p={4}
                     borderRadius="md"
                     maxH="400px"
@@ -350,11 +348,11 @@ const JobsPage: React.FC = () => {
             shadow="sm"
             borderRadius="xl"
             border="1px"
-            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            borderColor={'gray.200'}
             whileHover={{ y: -2 }}
             transition={{ duration: 0.2 }}
           >
-            <CardBody p={6}>
+            <Box p={6}>
               <Stat>
                 <StatLabel>Total Jobs</StatLabel>
                 <StatNumber>{jobStats.total}</StatNumber>
@@ -363,7 +361,7 @@ const JobsPage: React.FC = () => {
                   All time
                 </StatHelpText>
               </Stat>
-            </CardBody>
+            </Box>
           </MotionCard>
           
           <MotionCard
@@ -371,11 +369,11 @@ const JobsPage: React.FC = () => {
             shadow="sm"
             borderRadius="xl"
             border="1px"
-            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            borderColor={'gray.200'}
             whileHover={{ y: -2 }}
             transition={{ duration: 0.2 }}
           >
-            <CardBody p={6}>
+            <Box p={6}>
               <Stat>
                 <StatLabel>Running</StatLabel>
                 <StatNumber color="blue.500">{jobStats.running}</StatNumber>
@@ -384,7 +382,7 @@ const JobsPage: React.FC = () => {
                   Active now
                 </StatHelpText>
               </Stat>
-            </CardBody>
+            </Box>
           </MotionCard>
           
           <MotionCard
@@ -392,11 +390,11 @@ const JobsPage: React.FC = () => {
             shadow="sm"
             borderRadius="xl"
             border="1px"
-            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            borderColor={'gray.200'}
             whileHover={{ y: -2 }}
             transition={{ duration: 0.2 }}
           >
-            <CardBody p={6}>
+            <Box p={6}>
               <Stat>
                 <StatLabel>Completed</StatLabel>
                 <StatNumber color="green.500">{jobStats.completed}</StatNumber>
@@ -405,7 +403,7 @@ const JobsPage: React.FC = () => {
                   Successful
                 </StatHelpText>
               </Stat>
-            </CardBody>
+            </Box>
           </MotionCard>
           
           <MotionCard
@@ -413,11 +411,11 @@ const JobsPage: React.FC = () => {
             shadow="sm"
             borderRadius="xl"
             border="1px"
-            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            borderColor={'gray.200'}
             whileHover={{ y: -2 }}
             transition={{ duration: 0.2 }}
           >
-            <CardBody p={6}>
+            <Box p={6}>
               <Stat>
                 <StatLabel>Failed</StatLabel>
                 <StatNumber color="red.500">{jobStats.failed}</StatNumber>
@@ -426,7 +424,7 @@ const JobsPage: React.FC = () => {
                   Errors
                 </StatHelpText>
               </Stat>
-            </CardBody>
+            </Box>
           </MotionCard>
         </SimpleGrid>
         
@@ -436,12 +434,12 @@ const JobsPage: React.FC = () => {
           shadow="sm"
           borderRadius="xl"
           border="1px"
-          borderColor={useColorModeValue('gray.200', 'gray.700')}
+          borderColor={'gray.200'}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <CardBody p={6}>
+          <Box p={6}>
             <HStack spacing={4}>
               <InputGroup maxW="300px">
                 <InputLeftElement>
@@ -474,7 +472,7 @@ const JobsPage: React.FC = () => {
                 {filteredJobs.length} of {jobs.length} jobs
               </Text>
             </HStack>
-          </CardBody>
+          </Box>
         </MotionCard>
         
         {/* Jobs Table */}
@@ -483,12 +481,12 @@ const JobsPage: React.FC = () => {
           shadow="sm"
           borderRadius="xl"
           border="1px"
-          borderColor={useColorModeValue('gray.200', 'gray.700')}
+          borderColor={'gray.200'}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.3 }}
         >
-          <CardBody p={0}>
+          <Box p={0}>
             <TableContainer>
               <Table variant="simple">
                 <Thead>
@@ -511,7 +509,7 @@ const JobsPage: React.FC = () => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.05, duration: 0.3 }}
-                        _hover={{ bg: useColorModeValue('gray.50', 'gray.700') }}
+                        _hover={{ bg: 'gray.50' }}
                         cursor="pointer"
                         onClick={() => {
                           setSelectedJob(job);
@@ -631,7 +629,7 @@ const JobsPage: React.FC = () => {
                 </Text>
               </Box>
             )}
-          </CardBody>
+          </Box>
         </MotionCard>
         
         {/* Job Details Modal */}

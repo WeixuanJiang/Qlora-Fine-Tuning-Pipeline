@@ -1,61 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box,
-  VStack,
-  HStack,
-  Card,
-  CardBody,
-  CardHeader,
-  Heading,
-  Text,
-  Button,
   Badge,
-  Progress,
-  SimpleGrid,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  FormControl,
-  FormLabel,
-  Select,
-  Textarea,
-  Input,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Icon,
-  useColorModeValue,
-  useToast,
-  Alert,
-  AlertIcon,
-  Divider,
+  Box,
+  Button,
+  Box as Card,
+  
+  
   Code,
   Flex,
-  Spacer,
+  FormControl,
+  FormLabel,
+  HStack,
+  Heading,
+  Icon,
   IconButton,
-  Tooltip,
+  Input,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  Switch,
+  Progress,
+  Select,
+  Divider,
+  SimpleGrid,
   Slider,
-  SliderTrack,
   SliderFilledTrack,
-  SliderThumb,
   SliderMark,
+  SliderThumb,
+  SliderTrack,
+  Spacer,
+  Stat,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Table,
+  TableContainer,
+  Tabs,
+  Tbody,
+  Td,
+  Text,
+  Textarea,
+  Th,
+  Thead,
+  Tooltip,
+  Tr,
+  VStack,
+  useToast,
 } from '@chakra-ui/react';
+import { Alert, AlertIcon } from '@/components/common/Alert';
+import { useColorModeValue } from '@/hooks/useColorModeValue';
 import {
   PlayIcon,
   DownloadIcon,
@@ -123,7 +122,7 @@ const EvaluatePage: React.FC = () => {
   });
   
   const toast = useToast();
-  const cardBg = useColorModeValue('white', 'gray.800');
+  const cardBg = 'white';
   
   useEffect(() => {
     refreshModels();
@@ -296,18 +295,18 @@ const EvaluatePage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <CardHeader>
+                <Box>
                   <HStack spacing={3}>
                     <Icon as={SettingsIcon} color="primary.500" />
                     <Heading size="md">Evaluation Configuration</Heading>
                   </HStack>
-                </CardHeader>
-                <CardBody>
+                </Box>
+                <Box>
                   <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                     <FormControl isRequired>
                       <FormLabel>Model</FormLabel>
@@ -474,7 +473,7 @@ const EvaluatePage: React.FC = () => {
                       Start Evaluation
                     </Button>
                   </Flex>
-                </CardBody>
+                </Box>
               </MotionCard>
             </VStack>
           </TabPanel>
@@ -489,11 +488,11 @@ const EvaluatePage: React.FC = () => {
                   shadow="sm"
                   borderRadius="xl"
                   border="1px"
-                  borderColor={useColorModeValue('gray.200', 'gray.700')}
+                  borderColor={'gray.200'}
                   whileHover={{ y: -2 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <CardBody p={6}>
+                  <Box p={6}>
                     <Stat>
                       <StatLabel>Total Evaluations</StatLabel>
                       <StatNumber>{evaluationResults.length}</StatNumber>
@@ -502,7 +501,7 @@ const EvaluatePage: React.FC = () => {
                         All time
                       </StatHelpText>
                     </Stat>
-                  </CardBody>
+                  </Box>
                 </MotionCard>
                 
                 <MotionCard
@@ -510,11 +509,11 @@ const EvaluatePage: React.FC = () => {
                   shadow="sm"
                   borderRadius="xl"
                   border="1px"
-                  borderColor={useColorModeValue('gray.200', 'gray.700')}
+                  borderColor={'gray.200'}
                   whileHover={{ y: -2 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <CardBody p={6}>
+                  <Box p={6}>
                     <Stat>
                       <StatLabel>Running</StatLabel>
                       <StatNumber color="blue.500">
@@ -525,7 +524,7 @@ const EvaluatePage: React.FC = () => {
                         In progress
                       </StatHelpText>
                     </Stat>
-                  </CardBody>
+                  </Box>
                 </MotionCard>
                 
                 <MotionCard
@@ -533,11 +532,11 @@ const EvaluatePage: React.FC = () => {
                   shadow="sm"
                   borderRadius="xl"
                   border="1px"
-                  borderColor={useColorModeValue('gray.200', 'gray.700')}
+                  borderColor={'gray.200'}
                   whileHover={{ y: -2 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <CardBody p={6}>
+                  <Box p={6}>
                     <Stat>
                       <StatLabel>Completed</StatLabel>
                       <StatNumber color="green.500">
@@ -548,7 +547,7 @@ const EvaluatePage: React.FC = () => {
                         Finished
                       </StatHelpText>
                     </Stat>
-                  </CardBody>
+                  </Box>
                 </MotionCard>
               </SimpleGrid>
               
@@ -558,12 +557,12 @@ const EvaluatePage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.3 }}
               >
-                <CardBody p={0}>
+                <Box p={0}>
                   <TableContainer>
                     <Table variant="simple">
                       <Thead>
@@ -583,7 +582,7 @@ const EvaluatePage: React.FC = () => {
                         {evaluationResults.map((result, index) => {
                           const StatusIcon = getStatusIcon(result.status);
                           return (
-                            <Tr key={result.id} _hover={{ bg: useColorModeValue('gray.50', 'gray.700') }}>
+                            <Tr key={result.id} _hover={{ bg: 'gray.50' }}>
                               <Td>
                                 <VStack align="start" spacing={1}>
                                   <Text fontWeight="medium">{result.name}</Text>
@@ -669,7 +668,7 @@ const EvaluatePage: React.FC = () => {
                       </Text>
                     </Box>
                   )}
-                </CardBody>
+                </Box>
               </MotionCard>
               
               {/* Detailed Results */}
@@ -679,12 +678,12 @@ const EvaluatePage: React.FC = () => {
                   shadow="sm"
                   borderRadius="xl"
                   border="1px"
-                  borderColor={useColorModeValue('gray.200', 'gray.700')}
+                  borderColor={'gray.200'}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <CardHeader>
+                  <Box>
                     <HStack justify="space-between">
                       <HStack spacing={3}>
                         <Icon as={FileTextIcon} color="primary.500" />
@@ -694,8 +693,8 @@ const EvaluatePage: React.FC = () => {
                         Close
                       </Button>
                     </HStack>
-                  </CardHeader>
-                  <CardBody>
+                  </Box>
+                  <Box>
                     <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6} mb={6}>
                       <Stat>
                         <StatLabel>Perplexity</StatLabel>
@@ -727,7 +726,7 @@ const EvaluatePage: React.FC = () => {
                             <Box
                               key={index}
                               p={4}
-                              bg={useColorModeValue('gray.50', 'gray.700')}
+                              bg={'gray.50'}
                               borderRadius="md"
                             >
                               <VStack spacing={3} align="stretch">
@@ -792,7 +791,7 @@ const EvaluatePage: React.FC = () => {
                         </VStack>
                       </Box>
                     )}
-                  </CardBody>
+                  </Box>
                 </MotionCard>
               )}
             </VStack>
@@ -814,12 +813,12 @@ const EvaluatePage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <CardBody p={8} textAlign="center">
+                <Box p={8} textAlign="center">
                   <Icon as={TrendingUpIcon} boxSize={12} color="gray.400" mb={4} />
                   <Text fontSize="lg" fontWeight="medium" color="gray.500" mb={2}>
                     Benchmark Comparisons Coming Soon
@@ -827,7 +826,7 @@ const EvaluatePage: React.FC = () => {
                   <Text color="gray.400">
                     This feature will allow you to compare your models against industry benchmarks
                   </Text>
-                </CardBody>
+                </Box>
               </MotionCard>
             </VStack>
           </TabPanel>

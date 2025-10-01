@@ -1,57 +1,53 @@
 import React, { useState } from 'react';
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
-  VStack,
-  HStack,
-  Card,
-  CardBody,
-  CardHeader,
-  Heading,
-  Text,
+  Button,
+  Box as Card,
+  
+  
   FormControl,
-  FormLabel,
-  FormHelperText,
   FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+  HStack,
+  Heading,
+  Icon,
   Input,
-  Select,
-  Textarea,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  Switch,
-  Button,
-  Divider,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
   Progress,
-  Badge,
-  Tooltip,
-  Icon,
-  useColorModeValue,
-  useToast,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
+  Select,
+  Divider,
   SimpleGrid,
   Slider,
-  SliderTrack,
   SliderFilledTrack,
-  SliderThumb,
   SliderMark,
+  SliderThumb,
+  SliderTrack,
+  Switch,
+  Text,
+  Textarea,
+  Tooltip,
+  VStack,
+  useToast,
+  Badge,
 } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/common/Alert';
+import { useColorModeValue } from '@/hooks/useColorModeValue';
 import {
   PlayIcon,
   UploadIcon,
   SettingsIcon,
   InfoIcon,
-  AlertIcon,
-  CpuIcon,
+    CpuIcon,
   DatabaseIcon,
   ZapIcon,
 } from '@/components/icons/GeometricIcons';
@@ -128,7 +124,7 @@ const FormSection: React.FC<{
   children: React.ReactNode;
   defaultExpanded?: boolean;
 }> = ({ title, description, icon, children, defaultExpanded = true }) => {
-  const cardBg = useColorModeValue('white', 'gray.800');
+  const cardBg = 'white';
   
   return (
     <MotionCard
@@ -136,7 +132,7 @@ const FormSection: React.FC<{
       shadow="sm"
       borderRadius="xl"
       border="1px"
-      borderColor={useColorModeValue('gray.200', 'gray.700')}
+      borderColor={'gray.200'}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -177,7 +173,7 @@ const TrainPage: React.FC = () => {
   const { models } = useModelStore();
   const toast = useToast();
   
-  const cardBg = useColorModeValue('white', 'gray.800');
+  const cardBg = 'white';
   
   const handleInputChange = (field: keyof TrainingFormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -625,12 +621,12 @@ const TrainPage: React.FC = () => {
         shadow="sm"
         borderRadius="xl"
         border="1px"
-        borderColor={useColorModeValue('gray.200', 'gray.700')}
+        borderColor={'gray.200'}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
       >
-        <CardBody p={6}>
+        <Box p={6}>
           <VStack spacing={4}>
             <Alert status="info" borderRadius="md">
               <AlertIcon />
@@ -664,7 +660,7 @@ const TrainPage: React.FC = () => {
               </Button>
             </HStack>
           </VStack>
-        </CardBody>
+        </Box>
       </MotionCard>
     </VStack>
   );

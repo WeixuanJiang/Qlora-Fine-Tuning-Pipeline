@@ -308,7 +308,8 @@ export const DatabaseIcon: React.FC<IconProps> = (props) => (
   </Icon>
 );
 
-export const TrendingUpIcon: React.FC<IconProps> = (props) => (
+// Alternate trend icon with accent dots for richer visuals
+export const TrendingUpSparkIcon: React.FC<IconProps> = (props) => (
   <Icon viewBox="0 0 24 24" {...props}>
     <path d="M3 17l6-6 4 4 8-8" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M17 7h4v4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
@@ -451,7 +452,8 @@ export const EyeOffIcon: React.FC<IconProps> = (props) => (
   </Icon>
 );
 
-export const EditIcon: React.FC<IconProps> = (props) => (
+// Outline-style edit icon to complement the filled version near the top of the file
+export const EditOutlineIcon: React.FC<IconProps> = (props) => (
   <Icon viewBox="0 0 24 24" {...props}>
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
   </Icon>

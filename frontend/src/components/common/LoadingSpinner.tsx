@@ -5,9 +5,10 @@ import {
   Spinner,
   Text,
   VStack,
-  useColorModeValue,
+  
   keyframes,
 } from '@chakra-ui/react';
+import { useColorModeValue } from '@/hooks/useColorModeValue';
 import { motion } from 'framer-motion';
 
 interface LoadingSpinnerProps {
@@ -36,11 +37,11 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   color,
   thickness = '4px',
 }) => {
-  const bgColor = useColorModeValue('white', 'gray.800');
-  const textColor = useColorModeValue('gray.600', 'gray.300');
-  const overlayBg = useColorModeValue('rgba(255, 255, 255, 0.8)', 'rgba(26, 32, 44, 0.8)');
-  
-  const spinnerColor = color || useColorModeValue('primary.500', 'primary.300');
+  const bgColor = 'white';
+  const textColor = 'gray.600';
+  const overlayBg = 'rgba(255, 255, 255, 0.8)';
+
+  const spinnerColor = color || 'primary.500';
   
   const sizeMap = {
     sm: { spinner: 'sm', text: 'sm' },

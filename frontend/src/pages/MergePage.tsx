@@ -1,66 +1,64 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box,
-  VStack,
-  HStack,
-  Card,
-  CardBody,
-  CardHeader,
-  Heading,
-  Text,
-  Button,
   Badge,
-  Progress,
-  SimpleGrid,
+  Box,
+  Button,
+  Box as Card,
+  
+  
+  Code,
+  Flex,
   FormControl,
   FormLabel,
-  Select,
+  HStack,
+  Heading,
+  Icon,
+  IconButton,
   Input,
-  Textarea,
-  Switch,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Icon,
-  IconButton,
-  useColorModeValue,
-  useToast,
-  Alert,
-  AlertIcon,
+  Progress,
+  Radio,
+  RadioGroup,
+  Select,
   Divider,
-  Code,
-  Flex,
+  SimpleGrid,
   Spacer,
-  Tooltip,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
+  Stack,
   Stat,
+  StatHelpText,
   StatLabel,
   StatNumber,
-  StatHelpText,
-  RadioGroup,
-  Radio,
-  Stack,
+  Switch,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Text,
+  Textarea,
+  Th,
+  Thead,
+  Tooltip,
+  Tr,
+  VStack,
+  useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/common/Alert';
+import { useColorModeValue } from '@/hooks/useColorModeValue';
 import {
   MergeIcon,
   PlayIcon,
@@ -121,7 +119,7 @@ const MergePage: React.FC = () => {
   });
   
   const toast = useToast();
-  const cardBg = useColorModeValue('white', 'gray.800');
+  const cardBg = 'white';
   
   useEffect(() => {
     refreshModels();
@@ -309,7 +307,7 @@ const MergePage: React.FC = () => {
                 <Text fontWeight="semibold" mb={3}>Adapters</Text>
                 <VStack spacing={2} align="stretch">
                   {job.adapters.map((adapter, index) => (
-                    <HStack key={index} p={3} bg={useColorModeValue('gray.50', 'gray.700')} borderRadius="md">
+                    <HStack key={index} p={3} bg={'gray.50'} borderRadius="md">
                       <Icon as={LayersIcon} color="primary.500" />
                       <Text>{adapter}</Text>
                     </HStack>
@@ -322,25 +320,25 @@ const MergePage: React.FC = () => {
               <Box>
                 <Text fontWeight="semibold" mb={3}>Parameters</Text>
                 <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-                  <Box p={3} bg={useColorModeValue('gray.50', 'gray.700')} borderRadius="md">
+                  <Box p={3} bg={'gray.50'} borderRadius="md">
                     <Text fontSize="sm" fontWeight="medium" color="gray.500" mb={1}>
                       Density
                     </Text>
                     <Code fontSize="sm">{job.parameters.density}</Code>
                   </Box>
-                  <Box p={3} bg={useColorModeValue('gray.50', 'gray.700')} borderRadius="md">
+                  <Box p={3} bg={'gray.50'} borderRadius="md">
                     <Text fontSize="sm" fontWeight="medium" color="gray.500" mb={1}>
                       Weight
                     </Text>
                     <Code fontSize="sm">{job.parameters.weight}</Code>
                   </Box>
-                  <Box p={3} bg={useColorModeValue('gray.50', 'gray.700')} borderRadius="md">
+                  <Box p={3} bg={'gray.50'} borderRadius="md">
                     <Text fontSize="sm" fontWeight="medium" color="gray.500" mb={1}>
                       Normalize
                     </Text>
                     <Code fontSize="sm">{job.parameters.normalize ? 'Yes' : 'No'}</Code>
                   </Box>
-                  <Box p={3} bg={useColorModeValue('gray.50', 'gray.700')} borderRadius="md">
+                  <Box p={3} bg={'gray.50'} borderRadius="md">
                     <Text fontSize="sm" fontWeight="medium" color="gray.500" mb={1}>
                       Output Path
                     </Text>
@@ -383,18 +381,18 @@ const MergePage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <CardHeader>
+                <Box>
                   <HStack spacing={3}>
                     <Icon as={MergeIcon} color="primary.500" />
                     <Heading size="md">Merge Configuration</Heading>
                   </HStack>
-                </CardHeader>
-                <CardBody>
+                </Box>
+                <Box>
                   <VStack spacing={6} align="stretch">
                     {/* Basic Configuration */}
                     <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
@@ -455,7 +453,7 @@ const MergePage: React.FC = () => {
                             <Box
                               key={adapter.id}
                               p={4}
-                              bg={useColorModeValue('gray.50', 'gray.700')}
+                              bg={'gray.50'}
                               borderRadius="md"
                               border="2px"
                               borderColor={selectedAdapters.includes(adapter.name) ? 'primary.500' : 'transparent'}
@@ -593,7 +591,7 @@ const MergePage: React.FC = () => {
                       </Button>
                     </Flex>
                   </VStack>
-                </CardBody>
+                </Box>
               </MotionCard>
             </VStack>
           </TabPanel>
@@ -608,11 +606,11 @@ const MergePage: React.FC = () => {
                   shadow="sm"
                   borderRadius="xl"
                   border="1px"
-                  borderColor={useColorModeValue('gray.200', 'gray.700')}
+                  borderColor={'gray.200'}
                   whileHover={{ y: -2 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <CardBody p={6}>
+                  <Box p={6}>
                     <Stat>
                       <StatLabel>Total Merges</StatLabel>
                       <StatNumber>{mergeJobs.length}</StatNumber>
@@ -621,7 +619,7 @@ const MergePage: React.FC = () => {
                         All time
                       </StatHelpText>
                     </Stat>
-                  </CardBody>
+                  </Box>
                 </MotionCard>
                 
                 <MotionCard
@@ -629,11 +627,11 @@ const MergePage: React.FC = () => {
                   shadow="sm"
                   borderRadius="xl"
                   border="1px"
-                  borderColor={useColorModeValue('gray.200', 'gray.700')}
+                  borderColor={'gray.200'}
                   whileHover={{ y: -2 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <CardBody p={6}>
+                  <Box p={6}>
                     <Stat>
                       <StatLabel>Running</StatLabel>
                       <StatNumber color="blue.500">
@@ -644,7 +642,7 @@ const MergePage: React.FC = () => {
                         In progress
                       </StatHelpText>
                     </Stat>
-                  </CardBody>
+                  </Box>
                 </MotionCard>
                 
                 <MotionCard
@@ -652,11 +650,11 @@ const MergePage: React.FC = () => {
                   shadow="sm"
                   borderRadius="xl"
                   border="1px"
-                  borderColor={useColorModeValue('gray.200', 'gray.700')}
+                  borderColor={'gray.200'}
                   whileHover={{ y: -2 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <CardBody p={6}>
+                  <Box p={6}>
                     <Stat>
                       <StatLabel>Completed</StatLabel>
                       <StatNumber color="green.500">
@@ -667,7 +665,7 @@ const MergePage: React.FC = () => {
                         Successful
                       </StatHelpText>
                     </Stat>
-                  </CardBody>
+                  </Box>
                 </MotionCard>
               </SimpleGrid>
               
@@ -677,12 +675,12 @@ const MergePage: React.FC = () => {
                 shadow="sm"
                 borderRadius="xl"
                 border="1px"
-                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                borderColor={'gray.200'}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.3 }}
               >
-                <CardBody p={0}>
+                <Box p={0}>
                   <TableContainer>
                     <Table variant="simple">
                       <Thead>
@@ -701,7 +699,7 @@ const MergePage: React.FC = () => {
                         {mergeJobs.map((job, index) => {
                           const StatusIcon = getStatusIcon(job.status);
                           return (
-                            <Tr key={job.id} _hover={{ bg: useColorModeValue('gray.50', 'gray.700') }}>
+                            <Tr key={job.id} _hover={{ bg: 'gray.50' }}>
                               <Td>
                                 <VStack align="start" spacing={1}>
                                   <Text fontWeight="medium">{job.name}</Text>
@@ -793,7 +791,7 @@ const MergePage: React.FC = () => {
                       </Text>
                     </Box>
                   )}
-                </CardBody>
+                </Box>
               </MotionCard>
             </VStack>
           </TabPanel>

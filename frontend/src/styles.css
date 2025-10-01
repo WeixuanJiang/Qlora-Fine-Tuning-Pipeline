@@ -82,11 +82,8 @@ button:disabled {
 
 .app-shell {
   min-height: 100vh;
-  background: radial-gradient(circle at 5% 10%, rgba(99, 102, 241, 0.25), transparent 45%),
-    radial-gradient(circle at 90% 5%, rgba(14, 165, 233, 0.18), transparent 50%),
-    radial-gradient(circle at 15% 85%, rgba(34, 197, 94, 0.12), transparent 55%),
-    #04060d;
-  color: #f8fafc;
+  background: #f9fafb;
+  color: #1f2937;
 }
 
 .app-layout {
@@ -105,9 +102,9 @@ button:disabled {
   flex-direction: column;
   gap: 2.5rem;
   padding: 2.5rem 2.1rem 2.75rem;
-  background: linear-gradient(165deg, rgba(10, 15, 28, 0.92), rgba(20, 27, 47, 0.92) 55%, rgba(35, 43, 70, 0.88));
-  border-right: 1px solid rgba(120, 133, 168, 0.28);
-  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.05);
+  background: #ffffff;
+  border-right: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
 
@@ -175,7 +172,7 @@ button:disabled {
 
 .nav-helper {
   font-size: 0.72rem;
-  color: rgba(148, 163, 184, 0.6);
+  color: rgba(100, 116, 139, 0.8);
 }
 
 .nav-link,
@@ -185,26 +182,26 @@ button:disabled {
   gap: 0.22rem;
   padding: 0.7rem 0.85rem;
   border-radius: var(--radius-md);
-  color: rgba(226, 232, 240, 0.78);
+  color: rgba(71, 85, 105, 0.9);
   border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.02);
+  background: transparent;
   transition: all 0.2s ease;
   width: 100%;
 }
 
 .nav-link:hover,
 .nav-sublink:hover {
-  background: rgba(99, 102, 241, 0.18);
-  border-color: rgba(99, 102, 241, 0.35);
-  color: #f8fafc;
+  background: rgba(241, 245, 249, 0.8);
+  border-color: rgba(226, 232, 240, 0.8);
+  color: rgba(51, 65, 85, 1);
 }
 
 .nav-link.active,
 .nav-sublink.active {
-  background: linear-gradient(145deg, rgba(99, 102, 241, 0.28), rgba(45, 212, 191, 0.25));
-  border-color: rgba(94, 234, 212, 0.42);
-  color: #f9fafb;
-  box-shadow: 0 10px 30px rgba(79, 70, 229, 0.35);
+  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: rgba(79, 70, 229, 1);
+  box-shadow: 0 1px 3px rgba(99, 102, 241, 0.2);
 }
 
 .nav-item.has-children > .nav-link {
@@ -299,14 +296,14 @@ button:disabled {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: rgba(3, 6, 15, 0.6);
-  backdrop-filter: blur(8px);
+  background: #f9fafb;
+  backdrop-filter: none;
 }
 
 .main-header {
   padding: 2.4rem 3rem 1.6rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
-  background: linear-gradient(145deg, rgba(14, 22, 40, 0.85), rgba(8, 11, 22, 0.8));
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  background: #ffffff;
 }
 
 .main-header-inner {
@@ -337,7 +334,7 @@ button:disabled {
 
 .main-heading p {
   margin: 0;
-  color: rgba(226, 232, 240, 0.7);
+  color: rgba(71, 85, 105, 0.9);
   max-width: 460px;
 }
 
@@ -435,9 +432,9 @@ button:disabled {
   gap: 1.8rem;
   padding: 1.8rem 2rem;
   border-radius: var(--radius-lg);
-  background: linear-gradient(160deg, rgba(14, 24, 44, 0.82), rgba(8, 13, 25, 0.82));
-  border: 1px solid rgba(99, 102, 241, 0.16);
-  box-shadow: 0 24px 60px rgba(6, 10, 20, 0.35);
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .page-header h1 {
@@ -447,7 +444,7 @@ button:disabled {
 
 .page-lead {
   margin: 0;
-  color: rgba(203, 213, 225, 0.75);
+  color: rgba(71, 85, 105, 0.9);
   max-width: 60ch;
 }
 
@@ -460,9 +457,9 @@ button:disabled {
 .page-hero {
   padding: 2rem;
   border-radius: var(--radius-lg);
-  background: linear-gradient(145deg, rgba(99, 102, 241, 0.22), rgba(14, 165, 233, 0.18));
-  border: 1px solid rgba(99, 102, 241, 0.28);
-  box-shadow: var(--shadow-soft);
+  background: rgba(241, 245, 249, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   display: grid;
   gap: 0.75rem;
 }
@@ -499,12 +496,11 @@ button:disabled {
 
 
 .card {
-  background: linear-gradient(160deg, rgba(15, 19, 35, 0.9), rgba(9, 12, 24, 0.9));
-  border: 1px solid rgba(99, 102, 241, 0.14);
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: var(--radius-lg);
   padding: 1.9rem;
-  box-shadow: 0 26px 60px rgba(4, 6, 15, 0.45);
-  backdrop-filter: blur(18px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .card-muted {
@@ -527,17 +523,17 @@ button:disabled {
 
 
 .info-card {
-  background: linear-gradient(150deg, rgba(13, 18, 31, 0.85), rgba(9, 12, 24, 0.85));
-  border: 1px solid rgba(99, 102, 241, 0.18);
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: var(--radius-md);
   padding: 1.5rem;
   display: grid;
   gap: 0.55rem;
-  box-shadow: 0 18px 46px rgba(5, 8, 16, 0.32);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .muted-text {
-  color: rgba(148, 163, 184, 0.75);
+  color: rgba(100, 116, 139, 0.9);
   margin: 0;
 }
 
@@ -549,18 +545,18 @@ button:disabled {
   padding: 0.35rem 0.8rem;
   border-radius: 999px;
   font-size: 0.82rem;
-  background: rgba(99, 102, 241, 0.22);
-  color: rgba(224, 231, 255, 0.92);
-  border: 1px solid rgba(129, 140, 248, 0.35);
+  background: rgba(241, 245, 249, 0.9);
+  color: rgba(71, 85, 105, 0.95);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 
 .empty-state {
   padding: 1.4rem;
   border-radius: var(--radius-md);
-  background: rgba(15, 23, 42, 0.78);
-  border: 1px dashed rgba(148, 163, 184, 0.4);
-  color: rgba(148, 163, 184, 0.82);
+  background: rgba(241, 245, 249, 0.9);
+  border: 1px dashed rgba(148, 163, 184, 0.5);
+  color: rgba(71, 85, 105, 0.9);
   text-align: center;
 }
 
@@ -571,23 +567,24 @@ button:disabled {
   border-radius: var(--radius-md);
   overflow: hidden;
   font-size: 0.9rem;
-  background: rgba(10, 14, 26, 0.78);
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .table thead {
-  background: rgba(15, 23, 42, 0.88);
+  background: rgba(241, 245, 249, 0.95);
   text-align: left;
 }
 
 .table th,
 .table td {
   padding: 0.85rem 1rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  color: rgba(51, 65, 85, 0.95);
 }
 
 .table tbody tr:hover {
-  background: rgba(99, 102, 241, 0.14);
+  background: rgba(241, 245, 249, 0.6);
 }
 
 .field {
@@ -609,20 +606,21 @@ button:disabled {
 .field input,
 .field select,
 .field textarea {
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: var(--radius-sm);
-  background: rgba(10, 12, 22, 0.65);
+  background: #ffffff;
   padding: 0.75rem 0.85rem;
   transition: border 0.2s ease, box-shadow 0.2s ease;
+  color: rgba(31, 41, 55, 1);
 }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   outline: none;
-  background: rgba(11, 15, 26, 0.8);
+  background: #ffffff;
 }
 
 .field textarea {
@@ -654,16 +652,17 @@ button.primary:hover:not(:disabled) {
 }
 
 button.secondary {
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: var(--radius-sm);
   padding: 0.7rem 1.25rem;
-  background: rgba(15, 20, 36, 0.7);
-  color: rgba(226, 232, 240, 0.85);
+  background: #ffffff;
+  color: rgba(71, 85, 105, 0.95);
   font-weight: 600;
 }
 
 button.secondary:hover:not(:disabled) {
-  border-color: rgba(148, 163, 184, 0.6);
+  border-color: rgba(148, 163, 184, 0.8);
+  background: rgba(241, 245, 249, 0.9);
 }
 
 .danger-link {
@@ -692,9 +691,9 @@ button.secondary:hover:not(:disabled) {
 .callout {
   border-radius: var(--radius-md);
   padding: 1.2rem 1.4rem;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(145deg, rgba(99, 102, 241, 0.18), rgba(14, 165, 233, 0.16));
-  color: rgba(226, 232, 240, 0.92);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(241, 245, 249, 0.9);
+  color: rgba(71, 85, 105, 0.95);
 }
 
 .callout strong {
@@ -754,8 +753,8 @@ button.secondary:hover:not(:disabled) {
   justify-content: space-between;
   gap: 1.2rem;
   padding: 1.4rem 1.6rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
-  background: linear-gradient(135deg, rgba(19, 26, 45, 0.9), rgba(8, 12, 23, 0.88));
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(99, 102, 241, 0.08);
 }
 
 .chat-toolbar-info {
@@ -774,7 +773,7 @@ button.secondary:hover:not(:disabled) {
 .chat-model-name {
   margin: 0;
   font-weight: 600;
-  color: rgba(224, 231, 255, 0.92);
+  color: rgba(51, 65, 85, 0.95);
 }
 
 .chat-toolbar-actions {
@@ -804,7 +803,7 @@ button.secondary:hover:not(:disabled) {
   gap: 1.1rem;
   padding: 1.6rem;
   overflow-y: auto;
-  background: rgba(6, 10, 20, 0.65);
+  background: rgba(241, 245, 249, 0.5);
 }
 
 .chat-message {
@@ -814,8 +813,8 @@ button.secondary:hover:not(:disabled) {
 }
 
 .chat-message.assistant .chat-bubble {
-  background: linear-gradient(145deg, rgba(79, 70, 229, 0.28), rgba(14, 165, 233, 0.24));
-  border-color: rgba(129, 140, 248, 0.35);
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.3);
 }
 
 .chat-message.user {
@@ -823,8 +822,8 @@ button.secondary:hover:not(:disabled) {
 }
 
 .chat-message.user .chat-bubble {
-  background: rgba(99, 102, 241, 0.18);
-  border-color: rgba(99, 102, 241, 0.35);
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.3);
   align-items: flex-end;
   text-align: right;
 }
@@ -842,18 +841,18 @@ button.secondary:hover:not(:disabled) {
   width: 38px;
   height: 38px;
   border-radius: 14px;
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(99, 102, 241, 0.15);
   display: grid;
   place-items: center;
   font-weight: 600;
-  color: rgba(224, 231, 255, 0.92);
+  color: rgba(79, 70, 229, 1);
 }
 
 .chat-bubble {
   padding: 0.95rem 1.1rem;
   border-radius: 18px;
-  background: rgba(15, 23, 42, 0.88);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
   display: grid;
   gap: 0.45rem;
   max-width: min(100%, 620px);
@@ -864,22 +863,22 @@ button.secondary:hover:not(:disabled) {
   align-items: center;
   gap: 0.6rem;
   font-size: 0.78rem;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(100, 116, 139, 0.8);
 }
 
 .chat-speaker {
   font-weight: 600;
   letter-spacing: 0.01em;
-  color: rgba(224, 231, 255, 0.92);
+  color: rgba(51, 65, 85, 0.95);
 }
 
 .copy-button {
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: 999px;
   padding: 0.25rem 0.7rem;
   font-size: 0.72rem;
-  background: rgba(15, 23, 42, 0.7);
-  color: rgba(224, 231, 255, 0.88);
+  background: #ffffff;
+  color: rgba(71, 85, 105, 0.9);
 }
 
 .chat-error {
@@ -893,19 +892,19 @@ button.secondary:hover:not(:disabled) {
   flex-direction: column;
   gap: 0.75rem;
   padding: 1.2rem 1.6rem 1.5rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.16);
-  background: linear-gradient(180deg, rgba(10, 14, 24, 0.88), rgba(6, 9, 18, 0.92));
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  background: #ffffff;
 }
 
 .chat-composer textarea {
   width: 100%;
   min-height: 130px;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(99, 102, 241, 0.16);
-  background: rgba(9, 13, 23, 0.82);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: #ffffff;
   padding: 1rem 1.1rem;
   resize: vertical;
-  color: inherit;
+  color: rgba(31, 41, 55, 1);
 }
 
 .chat-composer textarea:focus {
@@ -948,8 +947,8 @@ button.secondary:hover:not(:disabled) {
   gap: 0.75rem;
   padding: 1.1rem;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(12, 17, 29, 0.75);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: #ffffff;
 }
 
 .adapter-list {
@@ -967,14 +966,14 @@ button.secondary:hover:not(:disabled) {
   gap: 0.75rem;
   padding: 0.75rem 0.95rem;
   border-radius: var(--radius-sm);
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(241, 245, 249, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .log-window {
   border-radius: var(--radius-md);
-  border: 1px solid rgba(148, 163, 184, 0.15);
-  background: rgba(12, 17, 29, 0.75);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: #ffffff;
   display: grid;
   grid-template-rows: auto 1fr;
   max-height: 360px;
@@ -982,8 +981,9 @@ button.secondary:hover:not(:disabled) {
 
 .log-header {
   padding: 0.8rem 1rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
   font-weight: 600;
+  color: rgba(51, 65, 85, 0.95);
 }
 
 .log-stream {
@@ -992,7 +992,8 @@ button.secondary:hover:not(:disabled) {
   font-family: 'Fira Code', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
   font-size: 0.8rem;
   line-height: 1.5;
-  color: rgba(226, 232, 240, 0.88);
+  color: rgba(51, 65, 85, 0.95);
+  background: rgba(241, 245, 249, 0.5);
 }
 
 .settings-backdrop {
@@ -1011,28 +1012,28 @@ button.secondary:hover:not(:disabled) {
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
-  background: rgba(148, 163, 184, 0.18);
-  color: rgba(226, 232, 240, 0.85);
+  background: rgba(148, 163, 184, 0.15);
+  color: rgba(51, 65, 85, 0.95);
 }
 
 .badge.primary {
-  background: rgba(99, 102, 241, 0.25);
-  color: rgba(224, 231, 255, 0.92);
+  background: rgba(99, 102, 241, 0.15);
+  color: rgba(79, 70, 229, 1);
 }
 
 .badge.success {
-  background: rgba(34, 197, 94, 0.22);
-  color: #dcfce7;
+  background: rgba(34, 197, 94, 0.15);
+  color: rgba(22, 101, 52, 1);
 }
 
 .badge.warning {
-  background: rgba(249, 115, 22, 0.22);
-  color: #fed7aa;
+  background: rgba(249, 115, 22, 0.15);
+  color: rgba(154, 52, 18, 1);
 }
 
 .badge.muted {
-  background: rgba(148, 163, 184, 0.12);
-  color: rgba(203, 213, 225, 0.75);
+  background: rgba(148, 163, 184, 0.1);
+  color: rgba(71, 85, 105, 0.9);
 }
 
 .sr-only {
